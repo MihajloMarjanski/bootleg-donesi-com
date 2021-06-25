@@ -6,20 +6,22 @@ public class User extends Entity{
 	
 	protected String username;
 	protected String password;
-	protected String firtName;
+	protected String firstName;
 	protected String lastName;
 	protected Gender gender;
-	protected Date dateOfBirth;
+	protected String dateOfBirth;
 	protected Role role;
 	
 	
+	public User() {
+	}
 	
 	public User(int entityID, String username, String password, String firtName, String lastName, Gender gender,
-			Date dateOfBirth, Role role) {
+			String dateOfBirth, Role role) {
 		super(entityID);
 		this.username = username;
 		this.password = password;
-		this.firtName = firtName;
+		this.firstName = firtName;
 		this.lastName = lastName;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
@@ -40,11 +42,11 @@ public class User extends Entity{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getFirtName() {
-		return firtName;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFirtName(String firtName) {
-		this.firtName = firtName;
+	public void setFirstName(String firtName) {
+		this.firstName = firtName;
 	}
 	public String getLastName() {
 		return lastName;
@@ -58,10 +60,10 @@ public class User extends Entity{
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	public Date getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 	public Role getRole() {

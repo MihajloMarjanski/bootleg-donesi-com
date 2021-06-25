@@ -7,7 +7,7 @@ public class Menager extends User{
 	protected Integer restoran;
 
 	public Menager(int entityID, String username, String password, String firtName, String lastName, Gender gender,
-			Date dateOfBirth, Role role, Integer restoran) {
+			String dateOfBirth, Role role, Integer restoran) {
 		super(entityID, username, password, firtName, lastName, gender, dateOfBirth, role);
 		this.restoran = restoran;
 	}
