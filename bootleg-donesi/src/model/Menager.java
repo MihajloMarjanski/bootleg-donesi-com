@@ -1,11 +1,14 @@
 package model;
 
-import java.util.Date;
 
 public class Menager extends User{
 
 	protected Integer restoran;
-
+	
+	public Menager() {
+		restoran = 0;
+	}
+	
 	public Menager(int entityID, String username, String password, String firtName, String lastName, Gender gender,
 			String dateOfBirth, Role role, Integer restoran) {
 		super(entityID, username, password, firtName, lastName, gender, dateOfBirth, role);

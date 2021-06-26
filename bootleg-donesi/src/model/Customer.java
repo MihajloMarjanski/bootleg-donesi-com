@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Customer extends User{
 	
@@ -12,6 +11,7 @@ public class Customer extends User{
 	
 	public Customer() {
 		super();
+		orders = new ArrayList<Integer>();
 	}
 	
 	public Customer(int entityID, String username, String password, String firtName, String lastName, Gender gender,

@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Date;
 
 public class User extends Entity{
 	
@@ -30,6 +29,12 @@ public class User extends Entity{
 	
 	
 	
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", password=" + password + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", role=" + role + "]";
+	}
+
 	public String getUsername() {
 		return username;
 	}

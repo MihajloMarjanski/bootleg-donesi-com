@@ -1,4 +1,4 @@
-Vue.component("register",{
+Vue.component("registerEmployee",{
 
     data: function(){
         return{
@@ -9,6 +9,7 @@ Vue.component("register",{
                 password:"",
                 gender:"",
                 dateOfBirth:"",
+                role:"",
             }
         }
     },
@@ -17,7 +18,7 @@ Vue.component("register",{
     },
     template:`
     	<div>
-        	<h1>Register form</h1>
+        	<h1>Employee registration form</h1>
             <form id="registrationForm" method ="POST" @submit.prevent = "register">
                 <div>
                     <label for="firstName"><b>First Name</b></label>
@@ -43,6 +44,13 @@ Vue.component("register",{
                     </select>
                 </div>
                 <div>
+                <label for="role"><b>Role</b></label>
+                <select name="role" v-model="user.role" id="role" required>
+                    <option value="MENAGER">Menager</option>
+                    <option value="COURIER">Courier</option>
+                </select>
+            </div>
+                <div>
                     <label for="date"><b>Date of birth</b></label>
                     <input type="date" v-model="user.dateOfBirth" required/>
                 </div>
@@ -57,7 +65,7 @@ Vue.component("register",{
         register(){
         	console.log(this.user)
             axios
-            .post('/registerUser',this.user)
+            .post('/registerEmployee',this.user)
             .then(response=>{
                 this.$router.push('/')
             })

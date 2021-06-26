@@ -1,7 +1,6 @@
 package services;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import model.Customer;
 import model.CustomerType;
