@@ -40,7 +40,7 @@ public class CourierService {
 	
 	public static boolean checkUsernameAvailability(String username) {
 		for (Courier courier : courierList) {
-			if (courier.getUsername().equals(username)) {
+			if (courier.getUsername().equals(username) && !courier.isDeleted()) {
 				return false;
 			}
 		}
@@ -50,7 +50,7 @@ public class CourierService {
 	
 	public static boolean loginCourier(String username, String password) {
 		for (Courier courier : courierList) {
-			if (courier.getUsername().equals(username) && courier.getPassword().equals(password)) {
+			if (courier.getUsername().equals(username) && courier.getPassword().equals(password) && !courier.isDeleted()) {
 				return true;
 			}
 		}
@@ -60,12 +60,23 @@ public class CourierService {
 
 	public static Courier getCourierByUsername(String username) {
 		for (Courier courier: courierList) {
-			if (courier.getUsername().equals(username)) {
+			if (courier.getUsername().equals(username) && !courier.isDeleted()) {
 				return courier;
 			}
 		}
 			
 		return null;
+	}
+	
+	public static ArrayList<Courier> getAll() {
+		ArrayList<Courier> couriers = new ArrayList<Courier>();
+		for (Courier courier: courierList) {
+			if (!courier.isDeleted()) {
+				couriers.add(courier);
+			}
+		}
+			
+		return couriers;
 	}
 	
 	

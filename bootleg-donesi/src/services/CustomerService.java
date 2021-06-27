@@ -38,7 +38,7 @@ public class CustomerService {
 	
 	public static boolean checkUsernameAvailability(String username) {
 		for (Customer customer : customerList) {
-			if (customer.getUsername().equals(username)) {
+			if (customer.getUsername().equals(username) && !customer.isDeleted()) {
 				return false;
 			}
 		}
@@ -69,7 +69,7 @@ public class CustomerService {
 	
 	public static boolean loginCustomer(String username, String password) {
 		for (Customer customer : customerList) {
-			if (customer.getUsername().equals(username) && customer.getPassword().equals(password)) {
+			if (customer.getUsername().equals(username) && customer.getPassword().equals(password) && !customer.isDeleted()) {
 				return true;
 			}
 		}
@@ -79,11 +79,22 @@ public class CustomerService {
 	
 	public static Customer getCustomerByUsername(String username) {
 		for (Customer customer : customerList) {
-			if (customer.getUsername().equals(username)) {
+			if (customer.getUsername().equals(username) && !customer.isDeleted()) {
 				return customer;
 			}
 		}
 			
 		return null;
+	}
+	
+	public static ArrayList<Customer> getAll() {
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+		for (Customer customer: customerList) {
+			if (!customer.isDeleted()) {
+				customers.add(customer);
+			}
+		}
+			
+		return customers;
 	}
 }

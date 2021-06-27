@@ -17,7 +17,7 @@ Vue.component("register",{
     },
     template:`
     	<div>
-        	<h1>Register form</h1>
+        	<h1>Registration form</h1>
             <form id="registrationForm" method ="POST" @submit.prevent = "register">
                 <div>
                     <label for="firstName"><b>First Name</b></label>

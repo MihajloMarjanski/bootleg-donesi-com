@@ -40,7 +40,7 @@ public class MenagerService {
 	
 	public static boolean checkUsernameAvailability(String username) {
 		for (Menager menager : menagerList) {
-			if (menager.getUsername().equals(username)) {
+			if (menager.getUsername().equals(username) && !menager.isDeleted()) {
 				return false;
 			}
 		}
@@ -50,7 +50,7 @@ public class MenagerService {
 	
 	public static boolean loginMenager(String username, String password) {
 		for (Menager menager : menagerList) {
-			if (menager.getUsername().equals(username) && menager.getPassword().equals(password)) {
+			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted()) {
 				return true;
 			}
 		}
@@ -60,12 +60,23 @@ public class MenagerService {
 
 	public static Menager getMenagerByUsername(String username) {
 		for (Menager menager: menagerList) {
-			if (menager.getUsername().equals(username)) {
+			if (menager.getUsername().equals(username) && !menager.isDeleted()) {
 				return menager;
 			}
 		}
 			
 		return null;
+	}
+	
+	public static ArrayList<Menager> getAll() {
+		ArrayList<Menager> menagers = new ArrayList<Menager>();
+		for (Menager menager: menagerList) {
+			if (!menager.isDeleted()) {
+				menagers.add(menager);
+			}
+		}
+			
+		return menagers;
 	}
 	
 }

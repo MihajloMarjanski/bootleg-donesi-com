@@ -12,6 +12,8 @@ public class Location {
 		this.adress = adress;
 	}
 	
+	public Location() {}
+	
 	public double getGeoLatitude() {
 		return geoLatitude;
 	}

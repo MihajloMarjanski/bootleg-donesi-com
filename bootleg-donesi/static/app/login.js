@@ -35,7 +35,8 @@ Vue.component("login",{
             axios
             .post('/loginUser',this.user)
             .then(response=>{
-                localStorage.setItem('user',response.data)
+                localStorage.setItem('role',response.data.role)
+                localStorage.setItem('id',response.data.entityID)
                 console.log(response.data)
                 this.$router.push('/')
             })

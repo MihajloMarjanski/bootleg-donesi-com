@@ -35,7 +35,7 @@ public class AdminService {
 	
 	public static boolean checkUsernameAvailability(String username) {
 		for (Admin admin : adminList) {
-			if (admin.getUsername().equals(username)) {
+			if (admin.getUsername().equals(username) && !admin.isDeleted()) {
 				return false;
 			}
 		}
@@ -45,7 +45,7 @@ public class AdminService {
 	
 	public static boolean loginAdmin(String username, String password) {
 		for (Admin admin : adminList) {
-			if (admin.getUsername().equals(username) && admin.getPassword().equals(password)) {
+			if (admin.getUsername().equals(username) && admin.getPassword().equals(password) && !admin.isDeleted()) {
 				return true;
 			}
 		}
@@ -55,11 +55,22 @@ public class AdminService {
 
 	public static Admin getAdminByUsername(String username) {
 		for (Admin admin: adminList) {
-			if (admin.getUsername().equals(username)) {
+			if (admin.getUsername().equals(username) && !admin.isDeleted()) {
 				return admin;
 			}
 		}
 			
 		return null;
+	}
+	
+	public static ArrayList<Admin> getAll() {
+		ArrayList<Admin> admins = new ArrayList<Admin>();
+		for (Admin admin: adminList) {
+			if (!admin.isDeleted()) {
+				admins.add(admin);
+			}
+		}
+			
+		return admins;
 	}
 }

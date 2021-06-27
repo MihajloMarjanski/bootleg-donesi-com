@@ -1,5 +1,5 @@
 tr.selected {
-	background: lightblue;
+	background: rgb(51, 159, 196);
 }
 tr {
 	cursor: pointer;
@@ -11,4 +11,9 @@ tr {
 
 #success {
 	color: green;	
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
 }

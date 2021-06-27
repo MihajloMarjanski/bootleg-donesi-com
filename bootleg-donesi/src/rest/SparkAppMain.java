@@ -7,6 +7,9 @@ import static spark.Spark.staticFiles;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
@@ -20,6 +23,7 @@ import services.AdminService;
 import services.CourierService;
 import services.CustomerService;
 import services.MenagerService;
+import services.RestaurantService;
 
 
 public class SparkAppMain {
@@ -29,6 +33,7 @@ public class SparkAppMain {
 	private static MenagerService menagerService = new MenagerService();
 	private static CourierService courierService = new CourierService();
 	private static AdminService adminService = new AdminService();
+	private static RestaurantService restaurantService = new RestaurantService();
 	
 	
 	@SuppressWarnings("static-access")
@@ -39,6 +44,7 @@ public class SparkAppMain {
 		menagerService.load();
 		courierService.load();
 		adminService.load();
+		restaurantService.load();
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 		
@@ -143,20 +149,141 @@ public class SparkAppMain {
 		get("/allUsers", (req, res) -> {
 			res.type("application/json");
 			ArrayList<User> users = new ArrayList<User>();
-			for (User user : customerService.customerList) {
+			for (User user : customerService.getAll()) {
 				users.add(user);
 			}
-			for (User user : menagerService.menagerList) {
+			for (User user : menagerService.getAll()) {
 				users.add(user);
 			}		
-			for (User user : courierService.courierList) {
+			for (User user : courierService.getAll()) {
 				users.add(user);
 			}
-			for (User user : adminService.adminList) {
+			for (User user : adminService.getAll()) {
 				users.add(user);
 			}
 			res.status(200);
 			return g.toJson(users);
+		});
+		
+		post("/searchUsers", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> searchParams = g.fromJson(req.body(), HashMap.class);
+			ArrayList<User> users = new ArrayList<User>();
+			ArrayList<User> searchedUsers = new ArrayList<User>();
+			String firstName = searchParams.get("firstName");
+			String lastName = searchParams.get("lastName");
+			String username = searchParams.get("username");
+			String role = searchParams.get("role");
+			String type = searchParams.get("type");
+			String sort = searchParams.get("sort");
+			
+			
+			if (role.equals("")) {
+				for (User user : customerService.getAll()) {
+					users.add(user);
+				}
+				for (User user : menagerService.getAll()) {
+					users.add(user);
+				}		
+				for (User user : courierService.getAll()) {
+					users.add(user);
+				}
+				for (User user : adminService.getAll()) {
+					users.add(user);
+				}
+			}
+			
+			else if(role.equals("CUSTOMER")) {
+				ArrayList<Customer> customers = new ArrayList<Customer>();
+				if(type.equals("")) {
+					for (Customer user : customerService.getAll()) {
+						customers.add(user);
+					}
+				}
+				else{
+					for (Customer user : customerService.getAll()) {
+						if(user.getCustomerType().getTypeName().equals(type)) {
+							customers.add(user);
+						}
+					}
+				}
+				if(sort.equals("ASCPOINTS")) {
+					customers = (ArrayList<Customer>) customers.stream()
+							  .sorted(Comparator.comparing(Customer::getPoints))
+							  .collect(Collectors.toList());
+				}
+				else if(sort.equals("DESCPOINTS")) {
+					customers = (ArrayList<Customer>) customers.stream()
+							  .sorted(Comparator.comparing(Customer::getPoints).reversed())
+							  .collect(Collectors.toList());
+				}
+				for (Customer customer : customers) {
+					users.add(customer);
+				}
+
+			}
+			else if(role.equals("MENAGER")) {
+				for (User user : menagerService.getAll()) {
+					users.add(user);
+				}
+			}
+			else if(role.equals("COURIER")) {
+				for (User user : courierService.getAll()) {
+					users.add(user);
+				}
+			}
+			else if(role.equals("ADMINISTRATOR")) {
+				for (User user : adminService.getAll()) {
+					users.add(user);
+				}
+			}
+
+			for (User user : users) {
+				if(user.getFirstName().contains(firstName) && user.getLastName().contains(lastName) && user.getUsername().contains(username)) {
+					searchedUsers.add(user);
+				}
+			}
+			
+			if(sort.equals("ASCFNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getFirstName))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCFNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getFirstName).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCLNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getLastName))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCLNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getLastName).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCUNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getUsername))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCUNAME")) {
+				searchedUsers = (ArrayList<User>) searchedUsers.stream()
+						  .sorted(Comparator.comparing(User::getUsername).reversed())
+						  .collect(Collectors.toList());
+			}
+			
+			
+			res.status(200);
+			return g.toJson(searchedUsers);
+		});
+		
+		get("/allRestaurants", (req, res) -> {
+			res.type("application/json");
+			res.status(200);
+			return g.toJson(restaurantService.getAll());
 		});
 	}
 }
