@@ -22,7 +22,7 @@ Vue.component("allUsers",{
     },
     template:`
     	<div>
-        	<h1>User list</h1>
+        	<h1>Users</h1>
             <div>
                 <input type="text" v-model="searchParmas.firstName" placeholder="Firstname"/>
                 <input type="text" v-model="searchParmas.lastName" placeholder="Lastname"/>

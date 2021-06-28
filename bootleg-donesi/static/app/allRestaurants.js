@@ -15,7 +15,7 @@ Vue.component("allRestaurants",{
     },
     template:`
         <div>
-            <h1>Restaurant list</h1> 
+            <h1>Restaurants</h1> 
             <table style="width:100%">
                 <thead>
                     <th style="width:5%">Logo</th>
