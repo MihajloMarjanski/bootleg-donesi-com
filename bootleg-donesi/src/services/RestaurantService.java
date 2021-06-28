@@ -23,7 +23,7 @@ public class RestaurantService {
 	}
 	
 	public static void load() {
-		Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270"));
+		Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270","Vojvodina"));
 		restaurantList.add(new Restaurant(1,"FLIPERANA",RestaurantType.ITALIAN,RestaurantStatus.CLOSED,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
 		restaurantList.add(new Restaurant(1,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
 		restaurantList.add(new Restaurant(1,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
@@ -57,5 +57,37 @@ public class RestaurantService {
 				  .collect(Collectors.toList());
 			
 		return restaurants;
+	}
+
+	public static ArrayList<Restaurant> getAllForType(String type) {
+		ArrayList<Restaurant> restaurants = getAll();
+		ArrayList<Restaurant> filteredRestaurants = new ArrayList<Restaurant>();
+		
+		
+		
+		for (Restaurant restaurant : restaurants) {
+			if(type.equals("")) {
+				filteredRestaurants.add(restaurant);
+			}
+			else if(type.equals("ITALIAN") && restaurant.getType() == RestaurantType.ITALIAN) {
+				filteredRestaurants.add(restaurant);
+			}
+			else if(type.equals("CHINESE") && restaurant.getType() == RestaurantType.CHINESE) {
+				filteredRestaurants.add(restaurant);
+			}
+			else if(type.equals("GRILL") && restaurant.getType() == RestaurantType.GRILL) {
+				filteredRestaurants.add(restaurant);
+			}
+			else if(type.equals("GREEK") && restaurant.getType() == RestaurantType.GREEK) {
+				filteredRestaurants.add(restaurant);
+			}
+			else if(type.equals("MEXICAN") && restaurant.getType() == RestaurantType.MEXICAN) {
+				filteredRestaurants.add(restaurant);
+			}
+			
+		}
+		
+		return filteredRestaurants;
+		
 	}
 }

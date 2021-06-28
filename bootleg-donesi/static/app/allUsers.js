@@ -3,7 +3,7 @@ Vue.component("allUsers",{
     data: function(){
         return{
             users:"",
-            searchParmas:{
+            searchParams:{
                 firstName:"",
                 lastName:"",
                 username:"",

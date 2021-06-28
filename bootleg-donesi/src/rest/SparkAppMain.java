@@ -17,6 +17,7 @@ import model.Admin;
 import model.Courier;
 import model.Customer;
 import model.Menager;
+import model.Restaurant;
 import model.Role;
 import model.User;
 import services.AdminService;
@@ -288,7 +289,7 @@ public class SparkAppMain {
 				return g.toJson(adminService.getAdminByID(user.getEntityID()));
 			}
 			else if (user.getRole() == Role.MENAGER) {
-				res.status(200);
+				res.status(200); 
 				return g.toJson(menagerService.getMenagerByID(user.getEntityID()));
 			}
 			else if (user.getRole() == Role.COURIER) {
@@ -351,6 +352,63 @@ public class SparkAppMain {
 			res.type("application/json");
 			res.status(200);
 			return g.toJson(restaurantService.getAll());
+		});
+		
+		post("/searchRestaurants", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> searchParams = g.fromJson(req.body(), HashMap.class);
+			ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+			ArrayList<Restaurant> searchedRestaurants = new ArrayList<Restaurant>();
+			String name = searchParams.get("name");
+			String location = searchParams.get("location");
+			String rating = searchParams.get("rating");
+			String type = searchParams.get("type");
+			String sort = searchParams.get("sort");
+			
+			
+			restaurants = RestaurantService.getAllForType(type);
+			
+			
+			for (Restaurant restaurant : restaurants) {
+				if(restaurant.getName().contains(name) && (restaurant.getTownAndCountry().contains(location) && restaurant.getRating().toString().contains(rating))) {
+					searchedRestaurants.add(restaurant);
+				}
+			}
+			
+			if(sort.equals("ASCNAME")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getName))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCNAME")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getName).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCLOC")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getLoc))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCLOC")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getLoc).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCRATING")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getRating))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCRATING")) {
+				searchedRestaurants = (ArrayList<Restaurant>) searchedRestaurants.stream()
+						  .sorted(Comparator.comparing(Restaurant::getRating).reversed())
+						  .collect(Collectors.toList());
+			}
+			
+			
+			res.status(200);
+			return g.toJson(searchedRestaurants);
 		});
 	}
 }

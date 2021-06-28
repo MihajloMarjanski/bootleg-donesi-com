@@ -3,7 +3,13 @@ Vue.component("allRestaurants",{
     data: function(){
         return{
             restaurants:"",
-
+            searchParmas:{
+                name:"",
+                location:"",
+                rating:"",
+                type:"",
+                sort:"",
+            },
         }
     },
     mounted(){
@@ -16,6 +22,36 @@ Vue.component("allRestaurants",{
     template:`
         <div>
             <h1>Restaurants</h1> 
+            <div>
+            <input type="text" v-model="searchParmas.name" placeholder="Name"/>
+            <input type="text" v-model="searchParmas.location" placeholder="Location"/>
+            <label for="rating"><b>Rating</b></label>
+            <select name="rating" v-model="searchParmas.rating" id="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label for="type"><b>Type</b></label>
+            <select name="type" v-model="searchParmas.type" id="type">
+                <option value="ITALIAN">Italian</option>
+                <option value="CHINESE">Chinese</option>
+                <option value="GRILL">Grill</option>
+                <option value="GREEK">Greek</option>
+                <option value="MEXICAN">Mexican</option>
+            </select>
+            <label for="sort"><b>Sort by</b></label>
+            <select name="sort" v-model="searchParmas.sort" id="sort">
+                <option value="ASCNAME">Name Ascending</option>
+                <option value="DESCNAME">Name Descending</option>
+                <option value="ASCLOC">Location Ascending</option>
+                <option value="DESCLOC">Location Descending</option>
+                <option value="ASCRATING">Rating Ascending</option>
+                <option value="DESCRATING">Rating Descending</option>
+            </select>
+            <button type="button" v-on:click="search">Filter</button>
+        </div>
             <table style="width:99.999%">
                 <thead>
                     <th style="width:5%">Logo</th>
@@ -29,7 +65,7 @@ Vue.component("allRestaurants",{
                     <td style="width:15%" ><img :src="r.logoPath" width="100" height="100" ></td>
                    <td style="width:15%" >{{r.name}}</td>
                    <td style="width:10%">{{r.type}}</td>
-                   <td style="width:15%">{{r.location.adress.street}}, {{r.location.adress.town}}</td>
+                   <td style="width:15%">{{r.location.adress.street}}, {{r.location.adress.town}}, {{r.location.adress.country}}</td>
                    <td style="width:10%">{{r.rating}}</td>
                 </tr>
                </tbody>
@@ -39,6 +75,15 @@ Vue.component("allRestaurants",{
     methods:{
         view(restaurant){
             
+        },
+        search(){
+            axios
+            .post('/searchRestaurants', this.searchParmas)
+            .then(response=>{
+                this.restaurants = response.data
+            })
+            .catch((error) => {
+              });
         },
     }
 

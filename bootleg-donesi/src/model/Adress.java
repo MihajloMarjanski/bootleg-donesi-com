@@ -4,12 +4,14 @@ public class Adress {
 	protected String street;
 	protected String town;
 	protected String postalCode;
+	protected String country;
 	
-	public Adress(String street, String town, String postalCode) {
+	public Adress(String street, String town, String postalCode, String country) {
 		super();
 		this.street = street;
 		this.town = town;
 		this.postalCode = postalCode;
+		this.country = country;
 	}
 	
 	public Adress() {}
@@ -31,6 +33,14 @@ public class Adress {
 	}
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 	

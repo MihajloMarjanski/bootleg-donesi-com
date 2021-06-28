@@ -63,6 +63,21 @@ public class Restaurant extends Entity{
 	public void setMenuItems(ArrayList<Integer> menuItems) {
 		this.menuItems = menuItems;
 	}
+
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+	public String getTownAndCountry() {
+		return location.getAdress().getTown() + " " + location.getAdress().getCountry();
+	}
+	public String getLoc() {
+		return location.getAdress().getCountry() + " " +  location.getAdress().getTown() + " " +  location.getAdress().getStreet();
+	}
 	
 	
 }
