@@ -54,7 +54,7 @@ Vue.component("allUsers",{
                 </select>
                 <button type="button" v-on:click="search">Filter</button>
             </div> 
-            <table style="width:100%">
+            <table style="width:99.999%">
                 <thead>
                     <th style="width:30%">Name</th>
                     <th style="width:30%">Username</th>
