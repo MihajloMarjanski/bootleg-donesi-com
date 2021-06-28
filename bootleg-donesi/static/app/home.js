@@ -91,6 +91,7 @@ Vue.component("home",{
             this.id = ""
             this.role = ""
             this.username = ""
+            window.location.reload()
             //this.$router.push("/allUsers")
         }
 

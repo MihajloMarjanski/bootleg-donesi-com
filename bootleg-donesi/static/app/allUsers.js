@@ -23,8 +23,7 @@ Vue.component("allUsers",{
     template:`
     	<div>
         	<h1>User list</h1>
-            <div style="border:1px solid black">
-                <h2>Filter</h2>
+            <div>
                 <input type="text" v-model="searchParmas.firstName" placeholder="Firstname"/>
                 <input type="text" v-model="searchParmas.lastName" placeholder="Lastname"/>
                 <input type="text" v-model="searchParmas.username" placeholder="Username"/>
@@ -73,16 +72,9 @@ Vue.component("allUsers",{
                 </tr>
                </tbody>
             </table>
-            <div>
-                <button type= "button" v-on:click="cancel">Cancel</button>
-            </div>
         </div>
     `,
     methods:{
-        cancel(){
-            this.$router.push("/")
-        },
-
         search(){
             axios
             .post('/searchUsers', this.searchParmas)

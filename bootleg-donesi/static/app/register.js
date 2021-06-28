@@ -60,6 +60,7 @@ Vue.component("register",{
             .post('/registerUser',this.user)
             .then(response=>{
                 this.$router.push('/')
+                window.location.reload()
             })
             .catch((error) => {
                 console.log("Error");
@@ -69,6 +70,7 @@ Vue.component("register",{
 
         cancel(){
             this.$router.push("/")
+            window.location.reload()
         }
     }
 

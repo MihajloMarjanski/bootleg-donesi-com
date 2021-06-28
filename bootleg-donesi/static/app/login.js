@@ -40,6 +40,7 @@ Vue.component("login",{
                 localStorage.setItem('username',response.data.username)
                 console.log(response.data)
                 this.$router.push('/')
+                window.location.reload()
             })
             .catch((error) => {
                 console.log("Error");
@@ -49,6 +50,7 @@ Vue.component("login",{
 
         cancel(){
             this.$router.push("/")
+            window.location.reload()
         }
     }
 
