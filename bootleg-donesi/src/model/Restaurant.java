@@ -9,6 +9,7 @@ public class Restaurant extends Entity{
 	protected RestaurantStatus status;
 	protected Location location;
 	protected String logoPath;
+	protected Integer rating; 
 	protected ArrayList<Integer> menuItems;
 	
 	public Restaurant(int entityID, String name, RestaurantType type, RestaurantStatus status, Location location,
@@ -20,6 +21,7 @@ public class Restaurant extends Entity{
 		this.location = location;
 		this.logoPath = logoPath;
 		this.menuItems = menuItems;
+		this.rating = 1;
 	}
 	
 	public Restaurant() {

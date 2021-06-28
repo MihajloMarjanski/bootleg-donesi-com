@@ -2,8 +2,12 @@ package services;
 
 import java.util.ArrayList;
 
+import com.google.gson.JsonElement;
+
+import model.Admin;
 import model.Menager;
 import model.Role;
+import model.User;
 
 public class MenagerService {
 	
@@ -48,6 +52,16 @@ public class MenagerService {
 		return true;
 	}
 	
+	public static boolean checkUsernameAvailability(String username, int id) {
+		for (Menager menager : menagerList) {
+			if (menager.getUsername().equals(username) && !menager.isDeleted() && menager.getEntityID() != id) {
+				return false;
+			}
+		}
+			
+		return true;
+	}
+	
 	public static boolean loginMenager(String username, String password) {
 		for (Menager menager : menagerList) {
 			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted()) {
@@ -77,6 +91,33 @@ public class MenagerService {
 		}
 			
 		return menagers;
+	}
+	
+	public static Menager getMenagerByID(int id) {
+		for (Menager menager: menagerList) {
+			if (menager.getEntityID() == id && !menager.isDeleted()) {
+				return menager;
+			}
+		}
+			
+		return null;
+	}
+
+	public Menager change(User user) {
+		for (Menager menager: getAll()) {
+			if(menager.getEntityID() == user.getEntityID()) {
+				menager.setFirstName(user.getFirstName());
+				menager.setLastName(user.getLastName());
+				menager.setGender(user.getGender());
+				menager.setPassword(user.getPassword());
+				menager.setUsername(user.getUsername());
+				menager.setDateOfBirth(user.getDateOfBirth());
+				
+				save();
+				return menager;
+			}
+		}
+		return null;
 	}
 	
 }

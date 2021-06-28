@@ -1,4 +1,4 @@
-Vue.component("registerEmployee",{
+Vue.component("myAccount",{
 
     data: function(){
         return{
@@ -10,16 +10,27 @@ Vue.component("registerEmployee",{
                 gender:"",
                 dateOfBirth:"",
                 role:"",
+                entityID:"",
+            },
+            sendParams:{
+                entityID:"",
+                role:"",
             }
         }
     },
     mounted(){
-
+        this.sendParams.entityID = localStorage.getItem('id')
+        this.sendParams.role = localStorage.getItem('role')
+        axios
+            .post('/getUser',this.sendParams)
+            .then(response=>{
+                this.user = response.data
+            })
     },
     template:`
     	<div>
-        	<h1>Employee registration form</h1>
-            <form id="registrationForm" method ="POST" @submit.prevent = "register">
+        	<h1>My account</h1>
+            <form id="registrationForm" method ="POST" @submit.prevent = "change">
                 <div>
                     <label for="firstName"><b>First Name</b></label>
                     <input type="text" v-model="user.firstName" placeholder = "First Name" required/>
@@ -44,36 +55,31 @@ Vue.component("registerEmployee",{
                     </select>
                 </div>
                 <div>
-                <label for="role"><b>Role</b></label>
-                <select name="role" v-model="user.role" id="role" required>
-                    <option value="MENAGER">Menager</option>
-                    <option value="COURIER">Courier</option>
-                </select>
-            </div>
-                <div>
                     <label for="date"><b>Date of birth</b></label>
                     <input type="date" v-model="user.dateOfBirth" required/>
                 </div>
                 <div>
-                    <button type = "submit"> Register</button>
+                    <button type = "submit"> Change</button>
                 </div>
             </form>
         </div>
     `,
     methods:{
-        register(){
+        change(){
         	console.log(this.user)
             axios
-            .post('/registerEmployee',this.user)
+            .post('/changeUser',this.user)
             .then(response=>{
-                alert("Successfully registered a new employee");
+                this.user = response.data
+                localStorage.setItem("username",response.data.username)
+                alert("Your data has been saved");
+                window.location.reload()
             })
             .catch((error) => {
                 console.log("Error");
                 alert("A user exists with the same username");
               });
         },
-
     }
 
 })

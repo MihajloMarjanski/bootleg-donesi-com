@@ -280,6 +280,73 @@ public class SparkAppMain {
 			return g.toJson(searchedUsers);
 		});
 		
+		post("/getUser", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			if(user.getRole() == Role.ADMINISTRATOR) {
+				res.status(200);
+				return g.toJson(adminService.getAdminByID(user.getEntityID()));
+			}
+			else if (user.getRole() == Role.MENAGER) {
+				res.status(200);
+				return g.toJson(menagerService.getMenagerByID(user.getEntityID()));
+			}
+			else if (user.getRole() == Role.COURIER) {
+				res.status(200);
+				return g.toJson(courierService.getCourierByID(user.getEntityID()));
+			}
+			else if (user.getRole() == Role.CUSTOMER) {
+				res.status(200);
+				return g.toJson(customerService.getCustomerByID(user.getEntityID()));
+			}
+			else {
+				res.status(404);
+				return "NOT FOUND";
+			}
+
+		});
+		
+		post("/changeUser", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			if(!customerService.checkUsernameAvailability(user.getUsername(), user.getEntityID())) {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}
+			else if(!menagerService.checkUsernameAvailability(user.getUsername(), user.getEntityID())) {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}
+			else if(!courierService.checkUsernameAvailability(user.getUsername(), user.getEntityID())) {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}
+			else if(!adminService.checkUsernameAvailability(user.getUsername(), user.getEntityID())) {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}
+			
+			if(user.getRole() == Role.ADMINISTRATOR) {
+				res.status(200);
+				return g.toJson(adminService.change(user));
+			}
+			else if (user.getRole() == Role.MENAGER) {
+				res.status(200);
+				return g.toJson(menagerService.change(user));
+			}
+			else if (user.getRole() == Role.COURIER) {
+				res.status(200);
+				return g.toJson(courierService.change(user));
+			}
+			else if (user.getRole() == Role.CUSTOMER) {
+				res.status(200);
+				return g.toJson(customerService.change(user));
+			}
+			
+			res.status(404);
+			return "NOTHING";
+		});
+		
 		get("/allRestaurants", (req, res) -> {
 			res.type("application/json");
 			res.status(200);

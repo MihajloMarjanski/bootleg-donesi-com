@@ -2,52 +2,45 @@ Vue.component("home",{
 
     data: function(){
         return{
-            restaurants:"",
             id:"",
             role:"",
+            username:"",
+            window:"RESTAURANTS"
 
         }
     },
     mounted(){
         this.role = localStorage.getItem('role')
         this.id = localStorage.getItem('id')
-        console.log(this.role)
-        console.log(this.id)
-        axios
-        .get('/allRestaurants')
-        .then(response=>{
-            this.restaurants = response.data
-        })
+        this.username = localStorage.getItem('username')
     },
     template:`
         <div>
     	    <div v-if="(!role)" >
-            	<h1>BOOTLEG DONESI</h1>
             	<button type= "button" v-on:click="register">Register</button>
             	<button type= "button" v-on:click="login">Login</button>
             </div>
             <div v-if="role === 'ADMINISTRATOR'">
-                <h1>DOBRODOSO GAZDA</h1>
+                <button type= "button" v-on:click="restaurants">Restaurants</button>
                 <button type= "button" v-on:click="registerEmployee">Register Employee</button>
                 <button type= "button" v-on:click="showUsers">Users</button>
+                {{username}}
+                <button type= "button" v-on:click="myAccount">My Account</button>
+                <button type= "button" v-on:click="logout">Logout</button>
             </div>
-            <h1>Restaurant list</h1> 
-            <table style="width:100%">
-                <thead>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>Logo</th>
-                </thead>
-                <tbody>
-                <tr v-for="r in restaurants">
-                   <td style="width:10%">{{r.name}}</td>
-                   <td style="width:10%">{{r.type}}</td>
-                   <td style="width:10%">{{r.location.adress.street}}, {{r.location.adress.town}}</td>
-                   <td style="width:30%"><img :src="r.logoPath" width="75" height="75" ></td>
-                </tr>
-               </tbody>
-            </table>
+            <div v-if="window === 'RESTAURANTS'">
+                <allRestaurants></allRestaurants>
+            </div>
+            <div v-if="window === 'USERS'">
+                <allUsers></allUsers>
+            </div>
+            <div v-if="window === 'REGISTEREMPLOYEE'">
+                <registerEmployee></registerEmployee>
+            </div>
+            <div v-if="window === 'MYACCOUNT'">
+            <myAccount></myAccount>
+        </div>
+
         </div>
     `,
     methods:{
@@ -57,11 +50,30 @@ Vue.component("home",{
         login(){
             this.$router.push("/login")
         },
+        restaurants(){
+            this.window = "RESTAURANTS"
+        },
         registerEmployee(){
-            this.$router.push("/registerEmployee")
+            this.window = "REGISTEREMPLOYEE"
+            //this.$router.push("/registerEmployee")
         },
         showUsers(){
-            this.$router.push("/allUsers")
+            this.window = "USERS"
+            //this.$router.push("/allUsers")
+        },
+        myAccount(){
+            this.window = "MYACCOUNT"
+            //this.$router.push("/allUsers")
+        },
+        logout(){
+            this.window = "RESTAURANTS"
+            localStorage.removeItem("id")
+            localStorage.removeItem("role")
+            localStorage.removeItem("username")
+            this.id = ""
+            this.role = ""
+            this.username = ""
+            //this.$router.push("/allUsers")
         }
 
     }

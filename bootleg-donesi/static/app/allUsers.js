@@ -57,19 +57,19 @@ Vue.component("allUsers",{
             </div> 
             <table style="width:100%">
                 <thead>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th></th>
-                    <th></th>
+                    <th style="width:30%">Name</th>
+                    <th style="width:30%">Username</th>
+                    <th style="width:30%">Role</th>
+                    <th style="width:5%"></th>
+                    <th style="width:5%"></th>
                 </thead>
                 <tbody>
                 <tr v-for="u in users">
-                   <td>{{u.firstName}} {{u.lastName}}</td>
-                   <td><a>{{u.username}}</a></td>
-                   <td>{{u.role}}</td>
-                   <td><button type= "button" v-on:click="deleteUser(u)">Delete</button> </td>
-                   <td><button type= "button" v-on:click="blockUser(u)">Block</button> </td>
+                   <td style="width:30%">{{u.firstName}} {{u.lastName}}</td>
+                   <td style="width:30%">{{u.username}}</td>
+                   <td style="width:30%">{{u.role}}</td>
+                   <td style="width:5%"><button type= "button" v-on:click="deleteUser(u)">Delete</button> </td>
+                   <td style="width:5%"><button type= "button" v-on:click="blockUser(u)">Block</button> </td>
                 </tr>
                </tbody>
             </table>

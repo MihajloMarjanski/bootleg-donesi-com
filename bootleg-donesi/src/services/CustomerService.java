@@ -2,11 +2,15 @@ package services;
 
 import java.util.ArrayList;
 
+import com.google.gson.JsonElement;
+
+import model.Courier;
 import model.Customer;
 import model.CustomerType;
 import model.Gender;
 import model.Role;
 import model.ShoppingCart;
+import model.User;
 
 public class CustomerService {
 	
@@ -39,6 +43,16 @@ public class CustomerService {
 	public static boolean checkUsernameAvailability(String username) {
 		for (Customer customer : customerList) {
 			if (customer.getUsername().equals(username) && !customer.isDeleted()) {
+				return false;
+			}
+		}
+			
+		return true;
+	}
+	
+	public static boolean checkUsernameAvailability(String username, int id) {
+		for (Customer customer : customerList) {
+			if (customer.getUsername().equals(username) && !customer.isDeleted() && customer.getEntityID() != id) {
 				return false;
 			}
 		}
@@ -96,5 +110,32 @@ public class CustomerService {
 		}
 			
 		return customers;
+	}
+	
+	public static Customer getCustomerByID(int id) {
+		for (Customer customer: customerList) {
+			if (customer.getEntityID() == id && !customer.isDeleted()) {
+				return customer;
+			}
+		}
+			
+		return null;
+	}
+
+	public Customer change(User user) {
+		for (Customer customer: getAll()) {
+			if(customer.getEntityID() == user.getEntityID()) {
+				customer.setFirstName(user.getFirstName());
+				customer.setLastName(user.getLastName());
+				customer.setGender(user.getGender());
+				customer.setPassword(user.getPassword());
+				customer.setUsername(user.getUsername());
+				customer.setDateOfBirth(user.getDateOfBirth());
+				
+				save();
+				return customer;
+			}
+		}
+		return null;
 	}
 }

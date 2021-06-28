@@ -2,8 +2,12 @@ package services;
 
 import java.util.ArrayList;
 
+import com.google.gson.JsonElement;
+
 import model.Courier;
+import model.Menager;
 import model.Role;
+import model.User;
 
 public class CourierService {
 	
@@ -47,6 +51,15 @@ public class CourierService {
 			
 		return true;
 	}
+	public static boolean checkUsernameAvailability(String username, int id) {
+		for (Courier courier : courierList) {
+			if (courier.getUsername().equals(username) && !courier.isDeleted() && courier.getEntityID() != id) {
+				return false;
+			}
+		}
+			
+		return true;
+	}
 	
 	public static boolean loginCourier(String username, String password) {
 		for (Courier courier : courierList) {
@@ -77,6 +90,33 @@ public class CourierService {
 		}
 			
 		return couriers;
+	}
+	
+	public static Courier getCourierByID(int id) {
+		for (Courier courier: courierList) {
+			if (courier.getEntityID() == id && !courier.isDeleted()) {
+				return courier;
+			}
+		}
+			
+		return null;
+	}
+
+	public Courier change(User user) {
+		for (Courier courier: getAll()) {
+			if(courier.getEntityID() == user.getEntityID()) {
+				courier.setFirstName(user.getFirstName());
+				courier.setLastName(user.getLastName());
+				courier.setGender(user.getGender());
+				courier.setPassword(user.getPassword());
+				courier.setUsername(user.getUsername());
+				courier.setDateOfBirth(user.getDateOfBirth());
+				
+				save();
+				return courier;
+			}
+		}
+		return null;
 	}
 	
 	

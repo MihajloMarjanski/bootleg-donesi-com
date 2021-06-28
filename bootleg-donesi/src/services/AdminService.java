@@ -2,9 +2,12 @@ package services;
 
 import java.util.ArrayList;
 
+import com.google.gson.JsonElement;
+
 import model.Admin;
 import model.Gender;
 import model.Role;
+import model.User;
 
 public class AdminService {
 
@@ -43,6 +46,16 @@ public class AdminService {
 		return true;
 	}
 	
+	public static boolean checkUsernameAvailability(String username, int id) {
+		for (Admin admin : adminList) {
+			if (admin.getUsername().equals(username) && !admin.isDeleted() && admin.getEntityID() != id) {
+				return false;
+			}
+		}
+			
+		return true;
+	}
+	
 	public static boolean loginAdmin(String username, String password) {
 		for (Admin admin : adminList) {
 			if (admin.getUsername().equals(username) && admin.getPassword().equals(password) && !admin.isDeleted()) {
@@ -52,7 +65,17 @@ public class AdminService {
 			
 		return false;
 	}
-
+	
+	public static Admin getAdminByID(int id) {
+		for (Admin admin: adminList) {
+			if (admin.getEntityID() == id && !admin.isDeleted()) {
+				return admin;
+			}
+		}
+			
+		return null;
+	}
+	
 	public static Admin getAdminByUsername(String username) {
 		for (Admin admin: adminList) {
 			if (admin.getUsername().equals(username) && !admin.isDeleted()) {
@@ -72,5 +95,22 @@ public class AdminService {
 		}
 			
 		return admins;
+	}
+
+	public static Admin change(User user) {
+		for (Admin admin : getAll()) {
+			if(admin.getEntityID() == user.getEntityID()) {
+				admin.setFirstName(user.getFirstName());
+				admin.setLastName(user.getLastName());
+				admin.setGender(user.getGender());
+				admin.setPassword(user.getPassword());
+				admin.setUsername(user.getUsername());
+				admin.setDateOfBirth(user.getDateOfBirth());
+				
+				save();
+				return admin;
+			}
+		}
+		return null;
 	}
 }
