@@ -25,8 +25,8 @@ public class RestaurantService {
 	public static void load() {
 		Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270","Vojvodina"));
 		restaurantList.add(new Restaurant(1,"FLIPERANA",RestaurantType.ITALIAN,RestaurantStatus.CLOSED,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
-		restaurantList.add(new Restaurant(1,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
-		restaurantList.add(new Restaurant(1,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
+		restaurantList.add(new Restaurant(2,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
+		restaurantList.add(new Restaurant(3,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
 		
 	}
 	
@@ -88,6 +88,17 @@ public class RestaurantService {
 		}
 		
 		return filteredRestaurants;
+		
+	}
+
+	public static void delete(int entityID) {
+		for (Restaurant restaurant : restaurantList) {
+			if (restaurant.getEntityID() == entityID) {
+				restaurant.setDeleted(true);
+				break;
+			}
+		}
+		save();
 		
 	}
 }

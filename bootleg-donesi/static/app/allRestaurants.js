@@ -10,9 +10,12 @@ Vue.component("allRestaurants",{
                 type:"",
                 sort:"",
             },
+            role:"",
+
         }
     },
     mounted(){
+        this.role = localStorage.getItem("role");
         axios
         .get('/allRestaurants')
         .then(response=>{
@@ -59,6 +62,7 @@ Vue.component("allRestaurants",{
                     <th style="width:10%">Type</th>
                     <th style="width:10%">Location</th>
                     <th style="width:10%">Rating(1 to 5)</th>
+                    <th v-if="role === 'ADMINISTRATOR'" style="width:5%"></th>
                 </thead>
                 <tbody>
                 <tr v-for="r in restaurants" @click="view(r)">
@@ -67,6 +71,7 @@ Vue.component("allRestaurants",{
                    <td style="width:10%">{{r.type}}</td>
                    <td style="width:15%">{{r.location.adress.street}}, {{r.location.adress.town}}, {{r.location.adress.country}}</td>
                    <td style="width:10%">{{r.rating}}</td>
+                   <td v-if="role === 'ADMINISTRATOR'" style="width:5%"><button type= "button" v-on:click="deleteRestaurant(r)">Delete</button> </td>
                 </tr>
                </tbody>
             </table>
@@ -74,7 +79,23 @@ Vue.component("allRestaurants",{
     `,
     methods:{
         view(restaurant){
-            
+
+
+        },
+        deleteRestaurant(restaurant){
+            axios
+            .post('/deleteRestaurant', restaurant)
+            .then(response=>{
+                this.restaurants = response.data
+                this.searchParmas.name = ""
+                this.searchParmas.location = ""
+                this.searchParmas.rating = ""
+                this.searchParmas.sort = ""
+                this.searchParmas.type = ""
+            })
+            .catch((error) => {
+              });
+
         },
         search(){
             axios

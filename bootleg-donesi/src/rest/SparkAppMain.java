@@ -409,6 +409,48 @@ public class SparkAppMain {
 			
 			res.status(200);
 			return g.toJson(searchedRestaurants);
+			
+		});
+		
+		post("/deleteUser", (req, res) -> {
+			res.type("application/json");
+			
+			User userForDeletion = g.fromJson(req.body(), User.class);
+			if(userForDeletion.getRole() == Role.MENAGER) {
+				menagerService.delete(userForDeletion.getEntityID());
+			}
+			else if(userForDeletion.getRole() == Role.CUSTOMER) {
+				customerService.delete(userForDeletion.getEntityID());
+			}
+			else if(userForDeletion.getRole() == Role.COURIER) {
+				courierService.delete(userForDeletion.getEntityID());
+			}
+			
+			ArrayList<User> users = new ArrayList<User>();
+			for (User user : customerService.getAll()) {
+				users.add(user);
+			}
+			for (User user : menagerService.getAll()) {
+				users.add(user);
+			}		
+			for (User user : courierService.getAll()) {
+				users.add(user);
+			}
+			for (User user : adminService.getAll()) {
+				users.add(user);
+			}
+			res.status(200);
+			return g.toJson(users);
+		});
+		
+		post("/deleteRestaurant", (req, res) -> {
+			res.type("application/json");
+			
+			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
+			restaurantService.delete(restaurant.getEntityID());
+			
+			res.status(200);
+			return g.toJson(restaurantService.getAll());
 		});
 	}
 }

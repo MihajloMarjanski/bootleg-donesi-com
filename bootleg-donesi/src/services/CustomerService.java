@@ -8,6 +8,7 @@ import model.Courier;
 import model.Customer;
 import model.CustomerType;
 import model.Gender;
+import model.Menager;
 import model.Role;
 import model.ShoppingCart;
 import model.User;
@@ -83,7 +84,7 @@ public class CustomerService {
 	
 	public static boolean loginCustomer(String username, String password) {
 		for (Customer customer : customerList) {
-			if (customer.getUsername().equals(username) && customer.getPassword().equals(password) && !customer.isDeleted()) {
+			if (customer.getUsername().equals(username) && customer.getPassword().equals(password) && !customer.isDeleted() && !customer.isSuspicious()) {
 				return true;
 			}
 		}
@@ -137,5 +138,16 @@ public class CustomerService {
 			}
 		}
 		return null;
+	}
+
+	public static void delete(int entityID) {
+		for (Customer customer : customerList) {
+			if (customer.getEntityID() == entityID) {
+				customer.setDeleted(true);
+				break;
+			}
+		}
+		save();
+			
 	}
 }

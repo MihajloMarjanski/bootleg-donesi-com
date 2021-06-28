@@ -3,7 +3,7 @@ Vue.component("allUsers",{
     data: function(){
         return{
             users:"",
-            searchParams:{
+            searchParmas:{
                 firstName:"",
                 lastName:"",
                 username:"",
@@ -63,12 +63,12 @@ Vue.component("allUsers",{
                     <th style="width:5%"></th>
                 </thead>
                 <tbody>
-                <tr v-for="u in users">
+                <tr v-for="u in users" style="height:40px">
                    <td style="width:30%">{{u.firstName}} {{u.lastName}}</td>
                    <td style="width:30%">{{u.username}}</td>
                    <td style="width:30%">{{u.role}}</td>
-                   <td style="width:5%"><button type= "button" v-on:click="deleteUser(u)">Delete</button> </td>
-                   <td style="width:5%"><button type= "button" v-on:click="blockUser(u)">Block</button> </td>
+                   <td style="width:5%"><button v-if="u.role !== 'ADMINISTRATOR'" type= "button" v-on:click="deleteUser(u)">Delete</button> </td>
+                   <td style="width:5%"><button v-if="u.suspicious" type= "button" v-on:click="blockUser(u)">Block</button> </td>
                 </tr>
                </tbody>
             </table>
@@ -86,14 +86,20 @@ Vue.component("allUsers",{
         },
 
         deleteUser(user){
-            alert(user.firstName)
             axios
             .post('/deleteUser', user)
             .then(response=>{
                 this.users = response.data
+                this.searchParmas.firstName = ""
+                this.searchParmas.lastName = ""
+                this.searchParmas.username = ""
+                this.searchParmas.sort = ""
+                this.searchParmas.role = ""
+                this.searchParmas.type = ""
             })
             .catch((error) => {
               });
+
         },
 
         blockUser(user){

@@ -6,6 +6,7 @@ const AllUsers = { template: '<allUsers></allUsers>' }
 const AllRestaurants = { template: '<allRestaurants></allRestaurants>' }
 const MyAccount = { template: '<myAccount></myAccount>' }
 const AddRestaurant = { template: '<addRestaurant></addRestaurant>' }
+const RestaurantView = { template: '<restaurantView></restaurantView>' }
 
 const router = new VueRouter({
 	mode: 'hash',

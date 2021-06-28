@@ -64,7 +64,7 @@ public class MenagerService {
 	
 	public static boolean loginMenager(String username, String password) {
 		for (Menager menager : menagerList) {
-			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted()) {
+			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted() && !menager.isSuspicious()) {
 				return true;
 			}
 		}
@@ -118,6 +118,17 @@ public class MenagerService {
 			}
 		}
 		return null;
+	}
+
+	public static void delete(int entityID) {
+		for (Menager menager : menagerList) {
+			if (menager.getEntityID() == entityID) {
+				menager.setDeleted(true);
+				break;
+			}
+		}
+		save();
+		
 	}
 	
 }

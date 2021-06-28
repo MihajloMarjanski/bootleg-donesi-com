@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.gson.JsonElement;
 
 import model.Courier;
+import model.Customer;
 import model.Menager;
 import model.Role;
 import model.User;
@@ -63,7 +64,7 @@ public class CourierService {
 	
 	public static boolean loginCourier(String username, String password) {
 		for (Courier courier : courierList) {
-			if (courier.getUsername().equals(username) && courier.getPassword().equals(password) && !courier.isDeleted()) {
+			if (courier.getUsername().equals(username) && courier.getPassword().equals(password) && !courier.isDeleted() && !courier.isSuspicious()) {
 				return true;
 			}
 		}
@@ -117,6 +118,17 @@ public class CourierService {
 			}
 		}
 		return null;
+	}
+
+	public static void delete(int entityID) {
+		for (Courier courier: courierList) {
+			if (courier.getEntityID() == entityID) {
+				courier.setDeleted(true);
+				break;
+			}
+		}
+		save();
+		
 	}
 	
 	

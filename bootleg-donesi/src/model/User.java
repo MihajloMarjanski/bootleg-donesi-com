@@ -10,6 +10,7 @@ public class User extends Entity{
 	protected Gender gender;
 	protected String dateOfBirth;
 	protected Role role;
+	protected boolean suspicious;
 	
 	
 	public User() {
@@ -25,6 +26,7 @@ public class User extends Entity{
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.role = role;
+		this.suspicious = false;
 	}
 	
 	
@@ -33,6 +35,15 @@ public class User extends Entity{
 	public String toString() {
 		return "User [username=" + username + ", password=" + password + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", role=" + role + "]";
+	}
+	
+	
+	public boolean isSuspicious() {
+		return suspicious;
+	}
+
+	public void setSuspicious(boolean suspicious) {
+		this.suspicious = suspicious;
 	}
 
 	public String getUsername() {

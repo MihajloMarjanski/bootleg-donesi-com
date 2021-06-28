@@ -58,7 +58,7 @@ public class AdminService {
 	
 	public static boolean loginAdmin(String username, String password) {
 		for (Admin admin : adminList) {
-			if (admin.getUsername().equals(username) && admin.getPassword().equals(password) && !admin.isDeleted()) {
+			if (admin.getUsername().equals(username) && admin.getPassword().equals(password) && !admin.isDeleted() && !admin.isSuspicious()) {
 				return true;
 			}
 		}
