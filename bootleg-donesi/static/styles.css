@@ -3,6 +3,8 @@ tr.selected {
 }
 tr {
 	cursor: pointer;
+	border: 1px solid rgb(136, 82, 0);
+
 }
 
 #error {
@@ -14,6 +16,12 @@ tr {
 }
 
 table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
+	background-color: bisque;
+}
+
+div{
+	background-color: bisque;
+}
+html{
+	background-color: bisque;
 }

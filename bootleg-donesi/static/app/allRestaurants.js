@@ -26,8 +26,8 @@ Vue.component("allRestaurants",{
                 </thead>
                 <tbody>
                 <tr v-for="r in restaurants" @click="view(r)">
-                    <td style="width:15%"><img :src="r.logoPath" width="100" height="100" ></td>
-                   <td style="width:15%">{{r.name}}</td>
+                    <td style="width:15%" ><img :src="r.logoPath" width="100" height="100" ></td>
+                   <td style="width:15%" >{{r.name}}</td>
                    <td style="width:10%">{{r.type}}</td>
                    <td style="width:15%">{{r.location.adress.street}}, {{r.location.adress.town}}</td>
                    <td style="width:10%">{{r.rating}}</td>

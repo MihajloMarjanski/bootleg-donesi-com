@@ -28,6 +28,24 @@ Vue.component("home",{
                 <button type= "button" v-on:click="myAccount">My Account</button>
                 <button type= "button" v-on:click="logout">Logout</button>
             </div>
+            <div v-if="role === 'CUSTOMER'">
+                <button type= "button" v-on:click="restaurants">Restaurants</button>
+                {{username}}
+                <button type= "button" v-on:click="myAccount">My Account</button>
+                <button type= "button" v-on:click="logout">Logout</button>
+            </div>
+            <div v-if="role === 'MENAGER'">
+                <button type= "button" v-on:click="restaurants">Restaurants</button>
+                {{username}}
+                <button type= "button" v-on:click="myAccount">My Account</button>
+                <button type= "button" v-on:click="logout">Logout</button>
+            </div>
+            <div v-if="role === 'COURIER'">
+                <button type= "button" v-on:click="restaurants">Restaurants</button>
+                {{username}}
+                <button type= "button" v-on:click="myAccount">My Account</button>
+                <button type= "button" v-on:click="logout">Logout</button>
+            </div>
             <div v-if="window === 'RESTAURANTS'">
                 <allRestaurants></allRestaurants>
             </div>
