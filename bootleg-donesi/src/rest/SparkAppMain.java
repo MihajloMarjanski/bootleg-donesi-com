@@ -38,7 +38,7 @@ public class SparkAppMain {
 	
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws Exception {
-		port(8080);
+		port(9090);
 		
 		customerService.load();
 		menagerService.load();

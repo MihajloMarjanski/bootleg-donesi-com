@@ -24,6 +24,7 @@ Vue.component("home",{
                 <button type= "button" v-on:click="restaurants">Restaurants</button>
                 <button type= "button" v-on:click="registerEmployee">Register Employee</button>
                 <button type= "button" v-on:click="showUsers">Users</button>
+                <button type= "button" v-on:click="addRestaurant">Add Restaurant</button>
                 {{username}}
                 <button type= "button" v-on:click="myAccount">My Account</button>
                 <button type= "button" v-on:click="logout">Logout</button>
@@ -56,9 +57,11 @@ Vue.component("home",{
                 <registerEmployee></registerEmployee>
             </div>
             <div v-if="window === 'MYACCOUNT'">
-            <myAccount></myAccount>
-        </div>
-
+                <myAccount></myAccount>
+            </div>
+            <div v-if="window === 'ADDRESTAURANT'">
+                <addRestaurant></addRestaurant>
+            </div>
         </div>
     `,
     methods:{
@@ -83,6 +86,10 @@ Vue.component("home",{
             this.window = "MYACCOUNT"
             //this.$router.push("/allUsers")
         },
+        addRestaurant(){
+            this.window = "ADDRESTAURANT"
+            //this.$router.push("/allUsers")
+        },
         logout(){
             this.window = "RESTAURANTS"
             localStorage.removeItem("id")
@@ -94,6 +101,7 @@ Vue.component("home",{
             window.location.reload()
             //this.$router.push("/allUsers")
         }
+
 
     }
 
