@@ -7,11 +7,12 @@ public class Comment extends Entity{
 	protected Integer order;
 	protected Integer rating;
 	protected String text;
+	protected String username;
 	protected boolean approved;
 	
 	
 	
-	public Comment(int entityID, Integer restaurant, Integer order, Integer customer, Integer rating, String text, boolean approved) {
+	public Comment(int entityID, Integer restaurant, Integer order, Integer customer, Integer rating, String text, boolean approved, String username) {
 		super(entityID);
 		this.restaurant = restaurant;
 		this.customer = customer;
@@ -19,6 +20,7 @@ public class Comment extends Entity{
 		this.text = text;
 		this.order = order;
 		this.approved = approved;
+		this.username = username;
 	}
 	
 	public Comment() {
@@ -61,6 +63,12 @@ public class Comment extends Entity{
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	@Override
+	public String toString() {
+		return "Comment [restaurant=" + restaurant + ", customer=" + customer + ", order=" + order + ", rating="
+				+ rating + ", text=" + text + ", approved=" + approved + "]";
 	}
 	
 	

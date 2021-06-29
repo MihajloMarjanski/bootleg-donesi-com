@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
+import dto.RestaurantDTO;
 import model.Admin;
 import model.Courier;
 import model.Customer;
@@ -21,9 +22,11 @@ import model.Restaurant;
 import model.Role;
 import model.User;
 import services.AdminService;
+import services.CommentService;
 import services.CourierService;
 import services.CustomerService;
 import services.MenagerService;
+import services.MenuItemService;
 import services.RestaurantService;
 
 
@@ -35,6 +38,8 @@ public class SparkAppMain {
 	private static CourierService courierService = new CourierService();
 	private static AdminService adminService = new AdminService();
 	private static RestaurantService restaurantService = new RestaurantService();
+	private static CommentService commentService = new CommentService();
+	private static MenuItemService menuItemService = new MenuItemService();
 	
 	
 	@SuppressWarnings("static-access")
@@ -46,6 +51,8 @@ public class SparkAppMain {
 		courierService.load();
 		adminService.load();
 		restaurantService.load();
+		commentService.load();
+		menuItemService.load();
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 		
@@ -452,6 +459,31 @@ public class SparkAppMain {
 			
 			res.status(200);
 			return g.toJson(restaurantService.getAll());
+		});
+		
+		post("/viewRestaurant", (req, res) -> {
+			res.type("application/json");
+			RestaurantDTO returnDTO = new RestaurantDTO();
+			Restaurant restaurant = new Restaurant();
+			User user = g.fromJson(req.body(), User.class);
+			restaurant = restaurantService.getRestaurantById(user.getEntityID());
+			returnDTO.setName(restaurant.getName());
+			returnDTO.setLocation(restaurant.getLocation());
+			returnDTO.setLogoPath(restaurant.getLogoPath());
+			returnDTO.setRating(restaurant.getRating());
+			returnDTO.setStatus(restaurant.getStatus());
+			returnDTO.setType(restaurant.getType());
+			if(user.getRole() == Role.ADMINISTRATOR || user.getRole() == Role.MENAGER) {
+				returnDTO.setComments(commentService.getAllForRestaurant(user.getEntityID()));
+			}
+			else {
+				returnDTO.setComments(commentService.getApprovedForRestaurant(user.getEntityID()));
+			}
+			returnDTO.setMenuItems(menuItemService.getAllForRestaurant(user.getEntityID()));
+			
+			
+			res.status(200);
+			return g.toJson(returnDTO);
 		});
 	}
 }

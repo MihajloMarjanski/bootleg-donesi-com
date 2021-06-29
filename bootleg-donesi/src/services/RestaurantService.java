@@ -117,4 +117,16 @@ public class RestaurantService {
 		save();
 		
 	}
+	
+	public static Restaurant getRestaurantById(int id) {
+		Restaurant returnRestaurant = new Restaurant();
+		for (Restaurant restaurant: restaurantList) {
+			if (!restaurant.isDeleted() && restaurant.getEntityID() == id) {
+				returnRestaurant = restaurant;
+				break;
+			}
+		}
+
+		return returnRestaurant;
+	}
 }
