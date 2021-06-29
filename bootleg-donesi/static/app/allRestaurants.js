@@ -76,7 +76,8 @@ Vue.component("allRestaurants",{
                    <td style="width:15%" >{{r.name}}</td>
                    <td style="width:10%">{{r.type}}</td>
                    <td style="width:15%">{{r.location.adress.street}}, {{r.location.adress.town}}, {{r.location.adress.country}}</td>
-                   <td style="width:10%">{{r.rating}}</td>
+                   <td v-if="!r.rating" style="width:10%">No rating yet</td>
+                   <td v-if="r.rating" style="width:10%">{{r.rating}}</td>
                    <td v-if="role === 'ADMINISTRATOR'" style="width:5%"><button type= "button" v-on:click="deleteRestaurant(r)">Delete</button> </td>
                 </tr>
                </tbody>

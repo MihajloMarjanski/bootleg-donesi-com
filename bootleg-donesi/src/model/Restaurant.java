@@ -21,7 +21,7 @@ public class Restaurant extends Entity{
 		this.location = location;
 		this.logoPath = logoPath;
 		this.menuItems = menuItems;
-		this.rating = 1;
+		this.rating = 0;
 	}
 	
 	public Restaurant() {
