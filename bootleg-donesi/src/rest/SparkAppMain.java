@@ -364,9 +364,10 @@ public class SparkAppMain {
 			String rating = searchParams.get("rating");
 			String type = searchParams.get("type");
 			String sort = searchParams.get("sort");
+			String open = searchParams.get("open");
 			
 			
-			restaurants = RestaurantService.getAllForType(type);
+			restaurants = RestaurantService.getAllForType(type,open);
 			
 			
 			for (Restaurant restaurant : restaurants) {

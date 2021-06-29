@@ -58,9 +58,25 @@ public class RestaurantService {
 			
 		return restaurants;
 	}
+	
+	public static ArrayList<Restaurant> getAllOpen() {
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+		for (Restaurant restaurant: restaurantList) {
+			if (!restaurant.isDeleted() && restaurant.getStatus() == RestaurantStatus.OPEN) {
+				restaurants.add(restaurant);
+			}
+		}
 
-	public static ArrayList<Restaurant> getAllForType(String type) {
-		ArrayList<Restaurant> restaurants = getAll();
+		return restaurants;
+	}
+
+	public static ArrayList<Restaurant> getAllForType(String type, String open) {
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+		if(open.equals("OPEN")){
+			restaurants = getAllOpen();
+		}else {
+			restaurants = getAll();
+		}
 		ArrayList<Restaurant> filteredRestaurants = new ArrayList<Restaurant>();
 		
 		

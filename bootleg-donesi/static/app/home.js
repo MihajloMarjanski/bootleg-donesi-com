@@ -84,6 +84,7 @@ Vue.component("home",{
         },
         restaurants(){
             this.window = "RESTAURANTS"
+            window.location.reload()
         },
         registerEmployee(){
             this.window = "REGISTEREMPLOYEE"

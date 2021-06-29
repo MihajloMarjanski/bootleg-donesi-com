@@ -8,6 +8,7 @@ Vue.component("allRestaurants",{
                 location:"",
                 rating:"",
                 type:"",
+                open:"",
                 sort:"",
             },
             role:"",
@@ -44,6 +45,10 @@ Vue.component("allRestaurants",{
                 <option value="GREEK">Greek</option>
                 <option value="MEXICAN">Mexican</option>
             </select>
+            <label for="open"><b>Open</b></label>
+            <select name="open" v-model="searchParmas.open" id="open">
+                <option value="OPEN">Yes</option>
+            </select>
             <label for="sort"><b>Sort by</b></label>
             <select name="sort" v-model="searchParmas.sort" id="sort">
                 <option value="ASCNAME">Name Ascending</option>
@@ -54,6 +59,7 @@ Vue.component("allRestaurants",{
                 <option value="DESCRATING">Rating Descending</option>
             </select>
             <button type="button" v-on:click="search">Filter</button>
+            
         </div>
             <table style="width:99.999%">
                 <thead>
