@@ -17,6 +17,14 @@ tr {
 table, th, td {
 	background-color: bisque;
 }
+td{
+	font-size: 20px;
+	color: rgb(100, 60, 0);
+}
+th{
+	color: rgb(100, 60, 0);
+	font-style: italic;
+}
 
 div{
 	background-color: bisque;
@@ -26,18 +34,41 @@ html{
 }
 
 button {
-	background-color: bisque;
-	border-color: 1px solid rgb(136, 82, 0);
+	background: rgb(136, 82, 0);
+	color: bisque;
+	border-radius: 5px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 16px;
+	font-size: 20px;
 }
 
 input{
 	background-color: rgb(250, 239, 226);
+	color: rgb(100, 60, 0);
+	font-size: 20px;
 }
+
 
 select{
 	background-color: rgb(250, 239, 226);
+	color: rgb(100, 60, 0);
+	font-size: 20px;
+}
+h1,h2,h3,h4{
+	color: rgb(100, 60, 0);
+	font-style: italic;
+	letter-spacing: 2px;
+	font-size: 45px;
+}
+span{
+	color: rgb(100, 60, 0);
+	font-weight: bold;
+	letter-spacing: 1px;
+	font-size: 20px;
+}
+
+label{
+	color: rgb(100, 60, 0);
+	font-size: 20px;
 }
