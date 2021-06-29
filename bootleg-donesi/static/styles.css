@@ -6,6 +6,8 @@ tr {
 	border: 1px solid rgb(136, 82, 0);
 }
 
+
+
 #error {
 	color: red;
 }
@@ -71,4 +73,18 @@ span{
 label{
 	color: rgb(100, 60, 0);
 	font-size: 20px;
+}
+
+.container {
+	width: 500px;
+	clear: both;
+  }
+  
+.container input {
+	width: 100%;
+	clear: both;
+}
+.container select {
+	width: 100%;
+	clear: both;
 }

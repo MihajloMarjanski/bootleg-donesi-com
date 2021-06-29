@@ -14,20 +14,23 @@ Vue.component("login",{
     template:`
     	<div>
         	<h1>Login form</h1>
-            <form id="loginForm" method ="POST" @submit.prevent = "login">
-                <div>
-                    <label for="username"><b>Username</b></label>
-                    <input type="text" v-model="user.username" placeholder = "Username" required/>
-                </div>
-                <div>
-                    <label for="password"><b>Password</b></label>
-                    <input type="password" v-model="user.password" placeholder = "Password" required/>
-                </div>
-                <div>
-                    <button type = "submit">Login</button>
-                    <button type= "button" v-on:click="cancel">Cancel</button>
-                </div>
-            </form>
+            <div class="container">
+                <form id="loginForm" method ="POST" @submit.prevent = "login">
+                    <div>
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" v-model="user.username" placeholder = "Username" required/>
+                    </div>
+                    <div>
+                        <label for="password"><b>Password</b></label>
+                        <input type="password" v-model="user.password" placeholder = "Password" required/>
+                    </div>
+                    <p></p>
+                    <div>
+                        <button type = "submit">Login</button>
+                        <button type= "button" v-on:click="cancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     `,
     methods:{

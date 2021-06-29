@@ -17,6 +17,7 @@ Vue.component("home",{
     template:`
         <div>
     	    <div v-if="(!role)" >
+                <button type= "button" v-on:click="restaurants">Restaurants</button>
                 <inline style="float: right">
             	    <button type= "button" v-on:click="register">Register</button>
             	    <button type= "button" v-on:click="login">Login</button>

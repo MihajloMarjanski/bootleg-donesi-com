@@ -30,38 +30,41 @@ Vue.component("myAccount",{
     template:`
     	<div>
         	<h1>My account</h1>
-            <form id="registrationForm" method ="POST" @submit.prevent = "change">
-                <div>
-                    <label for="firstName"><b>First Name</b></label>
-                    <input type="text" v-model="user.firstName" placeholder = "First Name" required/>
-                </div>
-                <div>
-                    <label for="lastName"><b>Last Name</b></label>
-                    <input type="text" v-model="user.lastName" placeholder = "Last Name" required/>
-                </div>
-                <div>
-                    <label for="username"><b>Username</b></label>
-                    <input type="text" v-model="user.username" placeholder = "Username" required/>
-                </div>
-                <div>
-                    <label for="password"><b>Password</b></label>
-                    <input type="password" v-model="user.password" placeholder = "Password" required/>
-                </div>
-                <div>
-                    <label for="gender"><b>Gender</b></label>
-                    <select name="gender" v-model="user.gender" id="gender" required>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="date"><b>Date of birth</b></label>
-                    <input type="date" v-model="user.dateOfBirth" required/>
-                </div>
-                <div>
-                    <button type = "submit"> Change</button>
-                </div>
-            </form>
+            <div class="container">
+                <form id="registrationForm" method ="POST" @submit.prevent = "change">
+                    <div>
+                        <label for="firstName"><b>First Name</b></label>
+                        <input type="text" v-model="user.firstName" placeholder = "First Name" required/>
+                    </div>
+                    <div>
+                        <label for="lastName"><b>Last Name</b></label>
+                        <input type="text" v-model="user.lastName" placeholder = "Last Name" required/>
+                    </div>
+                    <div>
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" v-model="user.username" placeholder = "Username" required/>
+                    </div>
+                    <div>
+                        <label for="password"><b>Password</b></label>
+                        <input type="password" v-model="user.password" placeholder = "Password" required/>
+                    </div>
+                    <div>
+                        <label for="gender"><b>Gender</b></label>
+                        <select name="gender" v-model="user.gender" id="gender" required>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date"><b>Date of birth</b></label>
+                        <input type="date" v-model="user.dateOfBirth" required/>
+                    </div>
+                    <p></p>
+                    <div>
+                        <button type = "submit"> Change</button>
+                    </div>
+                </form>
+            </div>
         </div>
     `,
     methods:{
