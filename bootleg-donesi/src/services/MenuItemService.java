@@ -18,7 +18,7 @@ public class MenuItemService {
 	public static void load() {
 		menuItemList.add(new MenuItem(1, "Cola", 100, MenuItemType.DRINK, 1, 300,
 				QuantityType.MILLILITERS, "Coca-Cola can", "menuPictures/melenac1.png"));
-		menuItemList.add(new MenuItem(1, "English breakfast", 500, MenuItemType.FOOD, 1, 300,
+		menuItemList.add(new MenuItem(2, "English breakfast", 500, MenuItemType.FOOD, 1, 300,
 				QuantityType.GRAMS, "Two cooked eggs and bacon strips", "menuPictures/melenac1.png"));
 		
 	}

@@ -26,6 +26,8 @@ public class MenagerService {
 		menager.setRole(Role.MENAGER);
 		menager.setEntityID(generateID());
 		menager.setRestoran(0);
+		menager.setBlocked(false);
+		menager.setSuspicious(false);
 		menagerList.add(menager);
 		save();
 	}
@@ -64,7 +66,7 @@ public class MenagerService {
 	
 	public static boolean loginMenager(String username, String password) {
 		for (Menager menager : menagerList) {
-			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted() && !menager.isSuspicious()) {
+			if (menager.getUsername().equals(username) && menager.getPassword().equals(password) && !menager.isDeleted() && !menager.isBlocked()) {
 				return true;
 			}
 		}
@@ -124,6 +126,17 @@ public class MenagerService {
 		for (Menager menager : menagerList) {
 			if (menager.getEntityID() == entityID) {
 				menager.setDeleted(true);
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public static void block(int entityID) {
+		for (Menager menager : menagerList) {
+			if (menager.getEntityID() == entityID) {
+				menager.setBlocked(true);
 				break;
 			}
 		}

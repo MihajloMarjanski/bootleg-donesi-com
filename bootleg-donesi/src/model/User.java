@@ -11,6 +11,7 @@ public class User extends Entity{
 	protected String dateOfBirth;
 	protected Role role;
 	protected boolean suspicious;
+	protected boolean blocked;
 	
 	
 	public User() {
@@ -27,6 +28,7 @@ public class User extends Entity{
 		this.dateOfBirth = dateOfBirth;
 		this.role = role;
 		this.suspicious = false;
+		this.blocked = false;
 	}
 	
 	
@@ -87,6 +89,14 @@ public class User extends Entity{
 	}
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}	
 	
 }

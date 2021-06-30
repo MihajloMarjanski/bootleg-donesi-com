@@ -44,6 +44,7 @@ Vue.component("home",{
             </div>
             <div v-if="role === 'MENAGER'">
                 <button type= "button" v-on:click="restaurants">Restaurants</button>
+                <button type= "button" v-on:click="myRestaurant">My Restaurant</button>
                 <inline style="float: right">
                     <span>{{username}}</span>
                     <button type= "button" v-on:click="myAccount">My Account</button>
@@ -100,6 +101,10 @@ Vue.component("home",{
         },
         addRestaurant(){
             this.window = "ADDRESTAURANT"
+            //this.$router.push("/allUsers")
+        },
+        myRestaurant(){
+            this.window = "MYRESTAURANT"
             //this.$router.push("/allUsers")
         },
         logout(){

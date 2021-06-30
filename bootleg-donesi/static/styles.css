@@ -6,6 +6,13 @@ tr {
 	border: 1px solid rgb(136, 82, 0);
 }
 
+.inforow {
+	border: none;
+	cursor: default;
+}
+.nopointerrow {
+	cursor: default;
+}
 
 
 #error {

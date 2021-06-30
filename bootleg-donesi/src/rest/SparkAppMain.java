@@ -184,7 +184,7 @@ public class SparkAppMain {
 			String role = searchParams.get("role");
 			String type = searchParams.get("type");
 			String sort = searchParams.get("sort");
-			
+			String suspicious = searchParams.get("suspicious");
 			
 			if (role.equals("")) {
 				for (User user : customerService.getAll()) {
@@ -247,8 +247,15 @@ public class SparkAppMain {
 			}
 
 			for (User user : users) {
-				if(user.getFirstName().contains(firstName) && user.getLastName().contains(lastName) && user.getUsername().contains(username)) {
-					searchedUsers.add(user);
+				if(user.getFirstName().toLowerCase().contains(firstName.toLowerCase()) && user.getLastName().toLowerCase().contains(lastName.toLowerCase()) && user.getUsername().toLowerCase().contains(username.toLowerCase())) {
+					if(suspicious.equals("yes")) {
+						if(user.isSuspicious()) {
+							searchedUsers.add(user);
+						}
+					}
+					else{
+						searchedUsers.add(user);
+					}
 				}
 			}
 			
@@ -378,7 +385,7 @@ public class SparkAppMain {
 			
 			
 			for (Restaurant restaurant : restaurants) {
-				if(restaurant.getName().contains(name) && (restaurant.getTownAndCountry().contains(location) && restaurant.getRating().toString().contains(rating))) {
+				if(restaurant.getName().toLowerCase().contains(name.toLowerCase()) && (restaurant.getTownAndCountry().toLowerCase().contains(location.toLowerCase()) && restaurant.getRating().toString().contains(rating))) {
 					searchedRestaurants.add(restaurant);
 				}
 			}
@@ -434,21 +441,26 @@ public class SparkAppMain {
 				courierService.delete(userForDeletion.getEntityID());
 			}
 			
-			ArrayList<User> users = new ArrayList<User>();
-			for (User user : customerService.getAll()) {
-				users.add(user);
-			}
-			for (User user : menagerService.getAll()) {
-				users.add(user);
-			}		
-			for (User user : courierService.getAll()) {
-				users.add(user);
-			}
-			for (User user : adminService.getAll()) {
-				users.add(user);
-			}
 			res.status(200);
-			return g.toJson(users);
+			return g.toJson(userForDeletion);
+		});
+		
+		post("/blockUser", (req, res) -> {
+			res.type("application/json");
+			
+			User userToBlock = g.fromJson(req.body(), User.class);
+			if(userToBlock.getRole() == Role.MENAGER) {
+				menagerService.block(userToBlock.getEntityID());
+			}
+			else if(userToBlock.getRole() == Role.CUSTOMER) {
+				customerService.block(userToBlock.getEntityID());
+			}
+			else if(userToBlock.getRole() == Role.COURIER) {
+				courierService.block(userToBlock.getEntityID());
+			}
+			
+			res.status(200);
+			return g.toJson(userToBlock);
 		});
 		
 		post("/deleteRestaurant", (req, res) -> {

@@ -78,6 +78,8 @@ public class CustomerService {
 		customer.setOrders(new ArrayList<Integer>());
 		customer.setShoppingCart(new ShoppingCart(generateID()));
 		customer.setCustomerType(normal);
+		customer.setBlocked(false);
+		customer.setSuspicious(false);
 		customerList.add(customer);
 		save();
 	}
@@ -149,5 +151,16 @@ public class CustomerService {
 		}
 		save();
 			
+	}
+
+	public static void block(int entityID) {
+		for (Customer customer : customerList) {
+			if (customer.getEntityID() == entityID) {
+				customer.setBlocked(true);
+				break;
+			}
+		}
+		save();
+		
 	}
 }

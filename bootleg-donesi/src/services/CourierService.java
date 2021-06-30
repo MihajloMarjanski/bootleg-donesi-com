@@ -27,6 +27,8 @@ public class CourierService {
 		courier.setRole(Role.COURIER);
 		courier.setEntityID(generateID());
 		courier.setOrders(new ArrayList<Integer>());
+		courier.setBlocked(false);
+		courier.setSuspicious(false);
 		courierList.add(courier);
 		save();
 	}
@@ -124,6 +126,17 @@ public class CourierService {
 		for (Courier courier: courierList) {
 			if (courier.getEntityID() == entityID) {
 				courier.setDeleted(true);
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public static void block(int entityID) {
+		for (Courier courier: courierList) {
+			if (courier.getEntityID() == entityID) {
+				courier.setBlocked(true);
 				break;
 			}
 		}

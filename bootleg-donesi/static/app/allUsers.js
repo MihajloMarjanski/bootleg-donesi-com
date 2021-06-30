@@ -10,7 +10,8 @@ Vue.component("allUsers",{
                 sort:"",
                 role:"",
                 type:"",
-            }
+                suspicious:"",
+            },
         }
     },
     mounted(){
@@ -41,6 +42,10 @@ Vue.component("allUsers",{
                     <option value="SILVER">Silver</option>
                     <option value="GOLD">Gold</option>
                 </select>
+                <label for="suspicious"><b>Suspicious</b></label>
+                <select name="suspicious" v-model="searchParmas.suspicious" id="suspicious">
+                    <option value="yes">Yes</option>
+                </select>
                 <label for="sort"><b>Sort by</b></label>
                 <select name="sort" v-model="searchParmas.sort" id="sort">
                     <option value="ASCFNAME">Firstname Ascending</option>
@@ -63,12 +68,13 @@ Vue.component("allUsers",{
                     <th style="width:5%"></th>
                 </thead>
                 <tbody>
-                <tr v-for="u in users" style="height:40px">
+                <tr class="nopointerrow" v-for="u in users" style="height:40px">
                    <td style="width:30%">{{u.firstName}} {{u.lastName}}</td>
                    <td style="width:30%">{{u.username}}</td>
                    <td style="width:30%">{{u.role}}</td>
+                   <td style="width:5%" v-if="u.role !== 'ADMINISTRATOR' && !u.blocked"><button type= "button" v-on:click="blockUser(u)">Block</button> </td>
+                   <td style="width:5%" v-if="u.role !== 'ADMINISTRATOR' && u.blocked">BLOCKED</td>
                    <td style="width:5%"><button v-if="u.role !== 'ADMINISTRATOR'" type= "button" v-on:click="deleteUser(u)">Delete</button> </td>
-                   <td style="width:5%"><button v-if="u.suspicious" type= "button" v-on:click="blockUser(u)">Block</button> </td>
                 </tr>
                </tbody>
             </table>
@@ -89,13 +95,13 @@ Vue.component("allUsers",{
             axios
             .post('/deleteUser', user)
             .then(response=>{
-                this.users = response.data
-                this.searchParmas.firstName = ""
-                this.searchParmas.lastName = ""
-                this.searchParmas.username = ""
-                this.searchParmas.sort = ""
-                this.searchParmas.role = ""
-                this.searchParmas.type = ""
+                axios
+                .post('/searchUsers', this.searchParmas)
+                .then(response=>{
+                    this.users = response.data
+                })
+                .catch((error) => {
+                  });
             })
             .catch((error) => {
               });
@@ -103,11 +109,16 @@ Vue.component("allUsers",{
         },
 
         blockUser(user){
-            alert(user.firstName)
             axios
             .post('/blockUser', user)
             .then(response=>{
-                this.users = response.data
+                axios
+                .post('/searchUsers', this.searchParmas)
+                .then(response=>{
+                    this.users = response.data
+                })
+                .catch((error) => {
+                  });
             })
             .catch((error) => {
               });

@@ -8,11 +8,11 @@ public class Comment extends Entity{
 	protected Integer rating;
 	protected String text;
 	protected String username;
-	protected boolean approved;
+	protected CommentStatus approved;
 	
 	
 	
-	public Comment(int entityID, Integer restaurant, Integer order, Integer customer, Integer rating, String text, boolean approved, String username) {
+	public Comment(int entityID, Integer restaurant, Integer order, Integer customer, Integer rating, String text, CommentStatus approved, String username) {
 		super(entityID);
 		this.restaurant = restaurant;
 		this.customer = customer;
@@ -26,10 +26,10 @@ public class Comment extends Entity{
 	public Comment() {
 	}
 	
-	public boolean isAproved() {
+	public CommentStatus getAproved() {
 		return approved;
 	}
-	public void setApproved(boolean approved) {
+	public void setApproved(CommentStatus approved) {
 		this.approved = approved;
 	}
 	

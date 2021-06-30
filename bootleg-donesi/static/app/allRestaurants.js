@@ -90,35 +90,35 @@ Vue.component("allRestaurants",{
             <div v-if="restaurantDTO">
                 <h1>Information</h1>
                 <div>
-                    <table style="width:99.999%; text-align:center">
+                    <table style="width:99.999%">
                         <thead>
                             <th style="width:50%"></th>
                             <th style="width:50%"></th>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td style="width:50%"><b>Logo</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b>Logo</b></td>
                             <td style="width:50%"><img :src="restaurantDTO.logoPath" width="100" height="100" ></td>
                         </tr>                        
-                        <tr>
-                            <td style="width:50%"><b> Name</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b> Name</b></td>
                             <td style="width:50%">{{restaurantDTO.name}} </td>
                         </tr>
-                        <tr>
-                            <td style="width:50%"><b>Type</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b>Type</b></td>
                             <td style="width:50%">{{restaurantDTO.type}}  </td>
                         </tr>
-                        <tr>
-                            <td style="width:50%"><b>Status</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b>Status</b></td>
                             <td style="width:50%">{{restaurantDTO.status}}  </td>
                         </tr>
-                        <tr>
-                            <td style="width:50%"><b>Rating</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b>Rating</b></td>
                             <td style="width:50%" v-if="!restaurantDTO.rating" >No rating yet</td>
                             <td style="width:50%" v-if="restaurantDTO.rating" >{{restaurantDTO.rating}}</td>
                         </tr> 
-                        <tr>
-                            <td style="width:50%"><b>Location</b></td>
+                        <tr class="inforow">
+                            <td style="width:50%; text-align:center"><b>Location</b></td>
                             <td style="width:50%">{{restaurantDTO.location.adress.street}}, {{restaurantDTO.location.adress.town}}, {{restaurantDTO.location.adress.country}}</td>
                         </tr>                                            
                         </tbody>
@@ -136,7 +136,7 @@ Vue.component("allRestaurants",{
                             <th v-if="role === 'CUSTOMER'" style="width:5%"></th>
                         </thead>
                         <tbody>
-                            <tr v-for="i in restaurantDTO.menuItems">
+                            <tr class="nopointerrow" v-for="i in restaurantDTO.menuItems">
                                 <td style="width:20%"> <img :src="i.picturePath" width="75" height="75" ></td>
                                 <td style="width:15%">{{i.name}}</td>
                                 <td style="width:40%">{{i.description}}</td>
@@ -156,7 +156,7 @@ Vue.component("allRestaurants",{
                             <th v-if="role === 'ADMINISTRATOR'" style="width:5%"></th>
                         </thead>
                         <tbody>
-                            <tr v-for="c in restaurantDTO.comments">
+                            <tr class="nopointerrow" v-for="c in restaurantDTO.comments">
                                 <td style="width:33%"> {{c.username}}</td>
                                 <td style="width:60%">{{c.text}}</td>
                                 <td style="width:5%">{{c.rating}}</td>
@@ -190,12 +190,13 @@ Vue.component("allRestaurants",{
             axios
             .post('/deleteRestaurant', restaurant)
             .then(response=>{
-                this.restaurants = response.data
-                this.searchParmas.name = ""
-                this.searchParmas.location = ""
-                this.searchParmas.rating = ""
-                this.searchParmas.sort = ""
-                this.searchParmas.type = ""
+                axios
+                .post('/searchRestaurants', this.searchParmas)
+                .then(response=>{
+                    this.restaurants = response.data
+                })
+                .catch((error) => {
+                  });
             })
             .catch((error) => {
               });
