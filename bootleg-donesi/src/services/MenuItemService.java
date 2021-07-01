@@ -73,5 +73,47 @@ public class MenuItemService {
 		save();
 		
 	}
+
+	public static boolean checkNameAvailability(MenuItem item) {
+		for (MenuItem menuItem : getAll()) {
+			if (menuItem.getRestaurant() == item.getRestaurant() && menuItem.getName().equals(item.getName())){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean checkNameAvailability(MenuItem item, int id) {
+		for (MenuItem menuItem : getAll()) {
+			if (menuItem.getRestaurant() == item.getRestaurant() && menuItem.getName().equals(item.getName()) && menuItem.getEntityID() != id){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	public static void add(MenuItem item) {
+		item.setDeleted(false);
+		item.setPicturePath("menuPictures/melenac1.png");
+		item.setEntityID(generateID());
+		menuItemList.add(item);
+		save();
+		
+	}
+
+	public static void change(MenuItem item) {
+		for (MenuItem menuItem : getAll()) {
+			if (menuItem.getEntityID() == item.getEntityID()){
+				menuItem.setDescription(item.getDescription());
+				menuItem.setName(item.getName());
+				menuItem.setPrice(item.getPrice());
+				menuItem.setQuantity(item.getQuantity());
+				menuItem.setQuantityType(item.getQuantityType());
+				menuItem.setType(item.getType());
+				break;
+			}
+		}
+	}
 	
 }

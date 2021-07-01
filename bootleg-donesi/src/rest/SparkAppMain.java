@@ -15,9 +15,11 @@ import com.google.gson.Gson;
 
 import dto.RestaurantDTO;
 import model.Admin;
+import model.Comment;
 import model.Courier;
 import model.Customer;
 import model.Menager;
+import model.MenuItem;
 import model.Restaurant;
 import model.Role;
 import model.User;
@@ -497,5 +499,102 @@ public class SparkAppMain {
 			res.status(200);
 			return g.toJson(returnDTO);
 		});
+		
+		post("/getRestaurantInfo", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> user = g.fromJson(req.body(), HashMap.class);
+					
+			Restaurant restaurant = restaurantService.getRestaurantById(menagerService.getRestaurantID(user.get("username")));
+		
+			res.status(200);
+			return g.toJson(restaurant);
+		});
+		
+		post("/getMenu", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> user = g.fromJson(req.body(), HashMap.class);
+					
+			Restaurant restaurant = restaurantService.getRestaurantById(menagerService.getRestaurantID(user.get("username")));
+			ArrayList<MenuItem> menuItems = menuItemService.getAllForRestaurant(restaurant.getEntityID());
+			
+			
+			res.status(200);
+			return g.toJson(menuItems);
+		});
+		
+		post("/getMyComments", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> user = g.fromJson(req.body(), HashMap.class);
+					
+			Restaurant restaurant = restaurantService.getRestaurantById(menagerService.getRestaurantID(user.get("username")));
+			ArrayList<Comment> comments = commentService.getAllForRestaurant(restaurant.getEntityID());
+			
+			
+			res.status(200);
+			return g.toJson(comments);
+		});
+		
+		post("/denyComment", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+					
+			commentService.denyComment(comment.getEntityID());			
+			
+			res.status(200);
+			return "DONE";
+		});
+		
+		post("/approveComment", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+			int restaurantID = comment.getRestaurant();
+			commentService.approveComment(comment.getEntityID());			
+			restaurantService.updateRating(restaurantID,commentService.calculateRestaurantRating(restaurantID));
+			
+			res.status(200);
+			return "DONE";
+		});
+		
+		post("/deleteComment", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+			int restaurantID = comment.getRestaurant();
+			commentService.delete(comment.getEntityID());			
+			restaurantService.updateRating(restaurantID,commentService.calculateRestaurantRating(restaurantID));
+			res.status(200);
+			return "DONE";
+		});
+		
+		post("/addItem", (req, res) -> {
+			res.type("application/json");
+			MenuItem item = g.fromJson(req.body(), MenuItem.class);			
+			int restaurantID = menagerService.getRestaurantID(item.getRestaurant());			
+			item.setRestaurant(restaurantID);	
+			if (menuItemService.checkNameAvailability(item)) {
+				menuItemService.add(item);
+				res.status(200);
+				return "DONE";
+			}
+			else {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}			
+		});
+		
+		post("/changeItem", (req, res) -> {
+			res.type("application/json");
+			MenuItem item = g.fromJson(req.body(), MenuItem.class);
+				
+			if (menuItemService.checkNameAvailability(item,item.getEntityID())) {
+				menuItemService.change(item);
+				res.status(200);
+				return "DONE";
+			}
+			else {
+				res.status(404);
+				return "ALREADY EXISTS";
+			}			
+		});
+		
 	}
 }

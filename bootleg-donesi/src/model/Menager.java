@@ -3,24 +3,24 @@ package model;
 
 public class Menager extends User{
 
-	protected Integer restoran;
+	protected Integer restaurant;
 	
 	public Menager() {
-		restoran = 0;
+		restaurant = 0;
 	}
 	
 	public Menager(int entityID, String username, String password, String firtName, String lastName, Gender gender,
 			String dateOfBirth, Role role, Integer restoran) {
 		super(entityID, username, password, firtName, lastName, gender, dateOfBirth, role);
-		this.restoran = restoran;
+		this.restaurant = restoran;
 	}
 
-	public Integer getRestoran() {
-		return restoran;
+	public Integer getRestaurant() {
+		return restaurant;
 	}
 
-	public void setRestoran(Integer restoran) {
-		this.restoran = restoran;
+	public void setRestaurant(Integer restoran) {
+		this.restaurant = restoran;
 	}
 	
 	

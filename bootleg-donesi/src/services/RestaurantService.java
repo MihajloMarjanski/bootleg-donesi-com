@@ -59,6 +59,17 @@ public class RestaurantService {
 		return restaurants;
 	}
 	
+	public static Restaurant getById(int id) {
+		Restaurant returnRes = new Restaurant();
+		for (Restaurant restaurant: restaurantList) {
+			if (!restaurant.isDeleted() && restaurant.getEntityID() == id) {
+				returnRes = restaurant;
+			}
+		}
+			
+		return returnRes;
+	}
+	
 	public static ArrayList<Restaurant> getAllOpen() {
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		for (Restaurant restaurant: restaurantList) {
@@ -128,5 +139,16 @@ public class RestaurantService {
 		}
 
 		return returnRestaurant;
+	}
+
+	public static void updateRating(int restaurantID, int calculateRestaurantRating) {
+		for (Restaurant restaurant : getAll()) {
+			if (restaurant.getEntityID() == restaurantID) {
+				restaurant.setRating(calculateRestaurantRating);
+				break;
+			}
+		}
+		save();
+		
 	}
 }

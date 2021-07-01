@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.gson.JsonElement;
 
 import model.Admin;
+import model.Gender;
 import model.Menager;
 import model.Role;
 import model.User;
@@ -18,14 +19,15 @@ public class MenagerService {
 	}
 	
 	public static void load() {
-		
+		menagerList.add(new Menager(1, "Pera", "123", "Petar", "Petrovic", Gender.MALE,
+				"1999-09-15", Role.MENAGER, 1));
 	}
 	
 	public static void addMenager(Menager menager) {
 		
 		menager.setRole(Role.MENAGER);
 		menager.setEntityID(generateID());
-		menager.setRestoran(0);
+		menager.setRestaurant(0);
 		menager.setBlocked(false);
 		menager.setSuspicious(false);
 		menagerList.add(menager);
@@ -105,6 +107,26 @@ public class MenagerService {
 		return null;
 	}
 
+	public static int getRestaurantID(String username) {
+		for (Menager menager: menagerList) {
+			if (menager.getUsername().equals(username) && !menager.isDeleted()) {
+				return menager.getRestaurant();
+			}
+		}
+			
+		return 0;
+	}
+	
+	public static int getRestaurantID(int id) {
+		for (Menager menager: menagerList) {
+			if (menager.getEntityID() == id && !menager.isDeleted()) {
+				return menager.getRestaurant();
+			}
+		}
+			
+		return 0;
+	}
+	
 	public Menager change(User user) {
 		for (Menager menager: getAll()) {
 			if(menager.getEntityID() == user.getEntityID()) {

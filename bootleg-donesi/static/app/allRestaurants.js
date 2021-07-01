@@ -182,6 +182,21 @@ Vue.component("allRestaurants",{
         },
         deleteComment(comment){
 
+            axios
+            .post('/deleteComment', comment)
+            .then(response=>{
+                axios
+                .post('/viewRestaurant', this.reqparams)
+                .then(response=>{
+                    this.restaurantDTO = response.data
+                    console.log(restaurantDTO)
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+                console.log(error)
+              });
         },
         deleteMenuItem(menuItem){
 

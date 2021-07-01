@@ -7,14 +7,14 @@ public class MenuItem extends Entity{
 	protected double price;
 	protected MenuItemType type;
 	protected Integer restaurant;
-	protected double quantity;
+	protected Integer quantity;
 	protected QuantityType quantityType;
 	protected String description;
 	protected String picturePath;
 	
 	
 	
-	public MenuItem(int entityID, String name, double price, MenuItemType type, Integer restaurant, double quantity,
+	public MenuItem(int entityID, String name, double price, MenuItemType type, Integer restaurant, Integer quantity,
 			QuantityType quantityType, String description, String picturePath) {
 		super(entityID);
 		this.name = name;
@@ -55,10 +55,10 @@ public class MenuItem extends Entity{
 	public void setRestaurant(Integer restaurant) {
 		this.restaurant = restaurant;
 	}
-	public double getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(double quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 	public QuantityType getQuantityType() {

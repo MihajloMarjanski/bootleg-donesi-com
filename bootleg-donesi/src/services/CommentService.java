@@ -15,9 +15,9 @@ public class CommentService {
 	}
 	
 	public static void load() {
-		commentList.add(new Comment(1, 1, 1, 1, 3, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
+		commentList.add(new Comment(1, 1, 1, 1, 4, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
 		commentList.add(new Comment(2, 1, 2, 1, 3, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
-		commentList.add(new Comment(3, 1, 3, 1, 3, "Sranje",CommentStatus.WAITING,"Mihajlo"));
+		commentList.add(new Comment(3, 1, 3, 1, 4, "Sranje",CommentStatus.WAITING,"Mihajlo"));
 		
 	}
 	
@@ -84,6 +84,51 @@ public class CommentService {
 			}
 		}
 		save();
+		
+	}
+
+	public static void denyComment(int entityID) {
+		for (Comment comment : getAll()) {
+			if (comment.getEntityID() == entityID) {
+				comment.setApproved(CommentStatus.DENIED);
+				break;
+			}
+		}
+		save();
+		
+	}
+	
+	public static void approveComment(int entityID) {
+		for (Comment comment : getAll()) {
+			if (comment.getEntityID() == entityID) {
+				comment.setApproved(CommentStatus.APPROVED);
+				break;
+			}
+		}
+		save();
+		
+	}
+	
+	public static int calculateRestaurantRating(int entityID) {
+		double average = 0;
+		double count = 0;
+		double sum = 0;
+		
+		for (Comment comment : getAll()) {
+			if (comment.getRestaurant() == entityID) {
+				count++;
+				sum = sum + comment.getRating();
+			}
+		}
+		
+		if (count == 0) {
+			return 0;
+		}
+		else {
+			average = sum/count;
+			int adjustedAverage = (int) Math.round(average);	
+			return adjustedAverage;
+		}
 		
 	}
 	

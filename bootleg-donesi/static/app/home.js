@@ -74,6 +74,9 @@ Vue.component("home",{
             <div v-if="window === 'ADDRESTAURANT'">
                 <addRestaurant></addRestaurant>
             </div>
+            <div v-if="window === 'MYRESTAURANT'">
+            <myRestaurant></myRestaurant>
+        </div>
         </div>
     `,
     methods:{
