@@ -16,16 +16,29 @@ Vue.component("allRestaurants",{
             reqparams:{
                 role:"",
                 entityID:"",
-            }
+            },
+
+            user:{
+                role:"",
+                entityID:"",
+            },
+
+            myResId:"",
+            myRes: false,
+
         }
     },
     mounted(){
+        this.user.entityID = localStorage.getItem("id")
+        this.user.role = localStorage.getItem("role");
         this.role = localStorage.getItem("role");
         axios
         .get('/allRestaurants')
         .then(response=>{
             this.restaurants = response.data
         })
+
+
     },
     template:`
         <div>
@@ -68,10 +81,10 @@ Vue.component("allRestaurants",{
                 <table style="width:99.999%">
                     <thead>
                         <th style="width:5%">Logo</th>
-                        <th style="width:10%">Name</th>
-                        <th style="width:10%">Type</th>
-                        <th style="width:10%">Location</th>
-                        <th style="width:10%">Rating(1 to 5)</th>
+                        <th style="width:15%">Name</th>
+                        <th style="width:5%">Type</th>
+                        <th style="width:15%">Location</th>
+                        <th style="width:5%">Rating(1 to 5)</th>
                         <th v-if="role === 'ADMINISTRATOR'" style="width:5%"></th>
                     </thead>
                     <tbody>
@@ -146,8 +159,8 @@ Vue.component("allRestaurants",{
                         </tbody>
                     </table>            
                 </div>
-                <h1>Comments</h1>
-                <div>
+                <h1 v-if="!myRes">Comments</h1>
+                <div v-if="!myRes">
                     <table style="width:99.999%">
                         <thead>
                             <th style="width:33%">Username</th>
@@ -165,6 +178,9 @@ Vue.component("allRestaurants",{
                         </tbody>
                     </table>            
                 </div>
+                <div v-if="myRes">
+                    <myComments></myComments>
+                </div>
             </div>
         </div>
     `,
@@ -176,6 +192,14 @@ Vue.component("allRestaurants",{
             .post('/viewRestaurant', this.reqparams)
             .then(response=>{
                 this.restaurantDTO = response.data
+                if(this.role === 'MENAGER'){
+                    axios
+                    .post('/getMyRestaurant',this.user)
+                    .then(response=>{
+                        this.myResId = response.data
+                        this.myRes = this.myResId == this.restaurantDTO.entityID
+                    })
+                }
             })
             .catch((error) => {
               });

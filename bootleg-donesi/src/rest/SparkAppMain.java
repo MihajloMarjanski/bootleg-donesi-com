@@ -6,6 +6,7 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import model.Courier;
 import model.Customer;
 import model.Menager;
 import model.MenuItem;
+import model.Order;
 import model.Restaurant;
 import model.Role;
 import model.User;
@@ -29,6 +31,7 @@ import services.CourierService;
 import services.CustomerService;
 import services.MenagerService;
 import services.MenuItemService;
+import services.OrderService;
 import services.RestaurantService;
 
 
@@ -42,6 +45,7 @@ public class SparkAppMain {
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
 	private static MenuItemService menuItemService = new MenuItemService();
+	private static OrderService orderService = new OrderService();
 	
 	
 	@SuppressWarnings("static-access")
@@ -55,6 +59,7 @@ public class SparkAppMain {
 		restaurantService.load();
 		commentService.load();
 		menuItemService.load();
+		orderService.load();
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 		
@@ -487,7 +492,8 @@ public class SparkAppMain {
 			returnDTO.setRating(restaurant.getRating());
 			returnDTO.setStatus(restaurant.getStatus());
 			returnDTO.setType(restaurant.getType());
-			if(user.getRole() == Role.ADMINISTRATOR || user.getRole() == Role.MENAGER) {
+			returnDTO.setEntityID(restaurant.getEntityID());
+			if(user.getRole() == Role.ADMINISTRATOR) {
 				returnDTO.setComments(commentService.getAllForRestaurant(user.getEntityID()));
 			}
 			else {
@@ -594,6 +600,148 @@ public class SparkAppMain {
 				res.status(404);
 				return "ALREADY EXISTS";
 			}			
+		});
+		
+		post("/getMyRestaurant", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			
+			
+			res.status(200);
+			return g.toJson(menagerService.getRestaurantID(user.getEntityID()));
+			
+		});
+		
+		post("/getOrders", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			ArrayList<Order> orders  = new ArrayList<Order>();
+			if(user.getRole() == Role.CUSTOMER) {
+				orders = orderService.getForCustomer(user.getEntityID());
+			}
+			else if(user.getRole() == Role.COURIER) {
+				orders = orderService.getForCourier(user.getEntityID());
+			}
+			else if(user.getRole() == Role.MENAGER) {
+				orders = orderService.getForRestaurant(menagerService.getRestaurantID(user.getEntityID()));
+			}
+			
+			
+			res.status(200);
+			return g.toJson(orders);
+			
+		});
+		
+		post("/searchOrders", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, String> searchParams = g.fromJson(req.body(), HashMap.class);
+			String id = searchParams.get("entityID");
+			String role = searchParams.get("role");
+			String restaurantName = searchParams.get("restaurantName");
+			String priceTo = searchParams.get("priceTo");
+			String priceFrom = searchParams.get("priceFrom");
+			String dateTo = searchParams.get("dateTo");
+			String dateFrom = searchParams.get("dateFrom");
+			String restaurantType = searchParams.get("restaurantType");
+			String ordreStatus = searchParams.get("ordreStatus");
+			String sort = searchParams.get("sort");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			
+			
+			
+			ArrayList<Order> orders  = new ArrayList<Order>();
+			if(role.equals("CUSTOMER")) {
+				orders = orderService.getForCustomer(Integer.parseInt(id),ordreStatus,restaurantType);
+			}
+			else if(role.equals("COURIER")) {
+				orders = orderService.getForCourier(Integer.parseInt(id),ordreStatus,restaurantType);
+			}
+			else if(role.equals("MENAGER")) {
+				orders = orderService.getForRestaurant(menagerService.getRestaurantID(Integer.parseInt(id)),ordreStatus,restaurantType);
+			}
+			
+			if(!priceTo.equals("")) {
+				ArrayList<Order> found  = new ArrayList<Order>();
+				for (Order order: orders) {
+					if(order.getPrice() >= Double.parseDouble(priceTo)) {
+						found.add(order);
+					}
+				}
+				orders.removeAll(found);
+			}
+
+			if(!priceFrom.equals("")) {
+				ArrayList<Order> found  = new ArrayList<Order>();
+				for (Order order: orders) {
+					if(order.getPrice() <= Double.parseDouble(priceFrom)) {
+						found.add(order);
+					}
+				}
+				orders.removeAll(found);
+			}
+			
+			ArrayList<Order> found3  = new ArrayList<Order>();
+			for (Order order: orders) {
+				if(!order.getRestaurantName().toLowerCase().contains(restaurantName.toLowerCase())) {
+					found3.add(order);
+				}
+			}
+			orders.removeAll(found3);
+			
+			if(!dateTo.equals("")) {
+				ArrayList<Order> found  = new ArrayList<Order>();
+				for (Order order: orders) {
+					if(order.getTimeOfOrder().after(formatter.parse(dateTo))) {
+						found.add(order);
+					}
+				}
+				orders.removeAll(found);
+			}
+			
+			if(!dateFrom.equals("")) {
+				ArrayList<Order> found  = new ArrayList<Order>();
+				for (Order order: orders) {
+					if(order.getTimeOfOrder().before(formatter.parse(dateFrom))) {
+						found.add(order);
+					}
+				}
+				orders.removeAll(found);
+			}
+			
+			if(sort.equals("ASCNAME")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getRestaurantName))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCNAME")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getRestaurantName).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCPRICE")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getTimeOfOrder))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCPRICE")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getTimeOfOrder).reversed())
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("ASCDATE")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getPrice))
+						  .collect(Collectors.toList());
+			}
+			else if(sort.equals("DESCDATE")) {
+				orders = (ArrayList<Order>) orders.stream()
+						  .sorted(Comparator.comparing(Order::getPrice).reversed())
+						  .collect(Collectors.toList());
+			}
+			
+			res.status(200);
+			return g.toJson(orders);
+			
 		});
 		
 	}

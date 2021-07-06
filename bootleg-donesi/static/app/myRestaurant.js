@@ -31,7 +31,7 @@ Vue.component("myRestaurant",{
                 <myComments></myComments>
             </div>
             <div v-if="window === 'ORDERS'">
-                <myOrders></myOrders>
+                <orders></orders>
             </div>
             <div v-if="window === 'CUSTOMERS'">
                 <myCusotmers></myCusotmers>

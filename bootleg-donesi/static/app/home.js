@@ -36,6 +36,7 @@ Vue.component("home",{
             </div>
             <div v-if="role === 'CUSTOMER'">
                 <button type= "button" v-on:click="restaurants">Restaurants</button>
+                <button type= "button" v-on:click="orders">My Orders</button>
                 <inline style="float: right">
                     <span>{{username}}</span>
                     <button type= "button" v-on:click="myAccount">My Account</button>
@@ -53,6 +54,7 @@ Vue.component("home",{
             </div>
             <div v-if="role === 'COURIER'">
                 <button type= "button" v-on:click="restaurants">Restaurants</button>
+                <button type= "button" v-on:click="orders">My Orders</button>
                 <inline style="float: right">
                     <span>{{username}}</span>
                     <button type= "button" v-on:click="myAccount">My Account</button>
@@ -75,8 +77,11 @@ Vue.component("home",{
                 <addRestaurant></addRestaurant>
             </div>
             <div v-if="window === 'MYRESTAURANT'">
-            <myRestaurant></myRestaurant>
-        </div>
+                <myRestaurant></myRestaurant>
+            </div>
+            <div v-if="window === 'ORDERS'">
+                <orders></orders>
+            </div>
         </div>
     `,
     methods:{
@@ -92,23 +97,22 @@ Vue.component("home",{
         },
         registerEmployee(){
             this.window = "REGISTEREMPLOYEE"
-            //this.$router.push("/registerEmployee")
         },
         showUsers(){
             this.window = "USERS"
-            //this.$router.push("/allUsers")
         },
         myAccount(){
             this.window = "MYACCOUNT"
-            //this.$router.push("/allUsers")
         },
         addRestaurant(){
             this.window = "ADDRESTAURANT"
-            //this.$router.push("/allUsers")
         },
         myRestaurant(){
             this.window = "MYRESTAURANT"
-            //this.$router.push("/allUsers")
+        },
+
+        orders(){
+            this.window = "ORDERS"
         },
         logout(){
             this.window = "RESTAURANTS"

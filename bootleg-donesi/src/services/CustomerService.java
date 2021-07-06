@@ -26,7 +26,7 @@ public class CustomerService {
 	}
 	
 	public static void load() {
-		
+		customerList.add(new Customer(1, "customer", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.CUSTOMER, new ArrayList<Integer>(), new ShoppingCart(1), 0));
 	}
 	
 	private static Integer generateID() 

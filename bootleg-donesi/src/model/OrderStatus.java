@@ -4,7 +4,7 @@ public enum OrderStatus {
 	PROCESSING,
 	INPREP,
 	WAITING,
-	TRASNPORT,
+	TRANSPORT,
 	DELIVERED,
 	CANCELED
 }

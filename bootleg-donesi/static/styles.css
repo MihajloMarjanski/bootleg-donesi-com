@@ -23,12 +23,17 @@ tr {
 	color: green;	
 }
 
+table{
+	table-layout: fixed;
+}
+
 table, th, td {
 	background-color: bisque;
 }
 td{
 	font-size: 20px;
 	color: rgb(100, 60, 0);
+	word-wrap: break-word;
 }
 th{
 	color: rgb(100, 60, 0);
@@ -63,6 +68,7 @@ select{
 	background-color: rgb(250, 239, 226);
 	color: rgb(100, 60, 0);
 	font-size: 20px;
+	cursor: pointer;
 }
 h1,h2,h3,h4{
 	color: rgb(100, 60, 0);

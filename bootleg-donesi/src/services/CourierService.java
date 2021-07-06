@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 
 import model.Courier;
 import model.Customer;
+import model.Gender;
 import model.Menager;
 import model.Role;
 import model.User;
@@ -19,7 +20,7 @@ public class CourierService {
 	}
 	
 	public static void load() {
-		
+		courierList.add(new Courier(1, "courier", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.COURIER, new ArrayList<Integer>()));
 	}
 	
 	public static void addCourier(Courier courier) {

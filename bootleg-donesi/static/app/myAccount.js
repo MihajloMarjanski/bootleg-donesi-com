@@ -69,7 +69,6 @@ Vue.component("myAccount",{
     `,
     methods:{
         change(){
-        	console.log(this.user)
             axios
             .post('/changeUser',this.user)
             .then(response=>{
