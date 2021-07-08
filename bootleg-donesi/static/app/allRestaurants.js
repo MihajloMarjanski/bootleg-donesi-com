@@ -22,9 +22,13 @@ Vue.component("allRestaurants",{
                 role:"",
                 entityID:"",
             },
-
             myResId:"",
             myRes: false,
+            commentable:false,
+            commentReq:{
+                username:"",
+                entityID:"",
+            }
 
         }
     },
@@ -37,7 +41,6 @@ Vue.component("allRestaurants",{
         .then(response=>{
             this.restaurants = response.data
         })
-
 
     },
     template:`
@@ -159,6 +162,7 @@ Vue.component("allRestaurants",{
                         </tbody>
                     </table>            
                 </div>
+                <h1 v-if="commentable">Leave a comment</h1>
                 <h1 v-if="!myRes">Comments</h1>
                 <div v-if="!myRes">
                     <table style="width:99.999%">
@@ -198,6 +202,15 @@ Vue.component("allRestaurants",{
                     .then(response=>{
                         this.myResId = response.data
                         this.myRes = this.myResId == this.restaurantDTO.entityID
+                    })
+                }
+                if(this.role === 'CUSTOMER'){
+                    this.commentReq.username = localStorage.getItem("username")
+                    this.commentReq.entityID = this.restaurantDTO.entityID
+                    axios
+                    .post('/canIComment',this.commentReq)
+                    .then(response=>{
+                        this.commentable = response.data
                     })
                 }
             })

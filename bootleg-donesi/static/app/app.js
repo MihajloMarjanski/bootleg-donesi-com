@@ -13,6 +13,8 @@ const MyMenu = { template: '<myMenu></myMenu>' }
 const MyComments = { template: '<myComments></myComments>' }
 const AddMenuItem = { template: '<addMenuItem></addMenuItem>' }
 const Orders = { template: '<orders></orders>' }
+const MyRequests = { template: '<myRequests></myRequests>' }
+const MyCustomers = { template: '<myCustomers></myCustomers>' }
 
 const router = new VueRouter({
 	mode: 'hash',
@@ -31,7 +33,9 @@ const router = new VueRouter({
 		{ path: '/myMenu', name: 'myMenu', component: MyMenu},
 		{ path: '/myComments', name: 'myComments', component: MyComments},
 		{ path: '/addMenuItem', name: 'addMenuItem', component: AddMenuItem},
-		{ path: '/orders', name: 'orders', component: Orders}
+		{ path: '/orders', name: 'orders', component: Orders},
+		{ path: '/myRequests', name: 'myRequests', component: MyRequests},
+		{ path: '/myCustomers', name: 'myCustomers', component: MyCustomers}
 	  ]
 });
 

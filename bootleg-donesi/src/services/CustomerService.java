@@ -26,7 +26,9 @@ public class CustomerService {
 	}
 	
 	public static void load() {
-		customerList.add(new Customer(1, "customer", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.CUSTOMER, new ArrayList<Integer>(), new ShoppingCart(1), 0));
+		Customer customer = new Customer(1, "customer", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.CUSTOMER, new ArrayList<Integer>(), new ShoppingCart(1), 0);
+		customer.setCustomerType(normal);
+		customerList.add(customer);
 	}
 	
 	private static Integer generateID() 
@@ -86,7 +88,7 @@ public class CustomerService {
 	
 	public static boolean loginCustomer(String username, String password) {
 		for (Customer customer : customerList) {
-			if (customer.getUsername().equals(username) && customer.getPassword().equals(password) && !customer.isDeleted() && !customer.isSuspicious()) {
+			if (customer.getUsername().equals(username) && customer.getPassword().equals(password) && !customer.isDeleted() && !customer.isBlocked()) {
 				return true;
 			}
 		}
@@ -163,4 +165,48 @@ public class CustomerService {
 		save();
 		
 	}
+
+	public static ArrayList<Customer> getForIDs(ArrayList<Integer> customerIDs) {
+		ArrayList<Customer> returnList = new ArrayList<Customer>();
+		for (Customer customer : getAll()) {
+			if (customerIDs.contains(customer.getEntityID())) {
+				returnList.add(customer);
+			}
+		}
+		return returnList;
+	}
+
+	public static void updateSuspicion(int customerID, boolean checkSuspicion) {
+		for (Customer customer : getAll()) {
+			if (customer.getEntityID() == customerID) {
+				customer.setSuspicious(checkSuspicion);
+				break;
+			}
+		}
+		save();
+	}
+
+	public static void removePoints(int customerID, double pointsLost) {
+		for (Customer customer : getAll()) {
+			if (customer.getEntityID() == customerID) {
+				customer.setPoints(customer.getPoints() - pointsLost);
+				if(customer.getPoints() < bronze.getRequiredPoints()) {
+					customer.setCustomerType(normal);
+					break;
+				}
+				else if(customer.getPoints() < silver.getRequiredPoints()) {
+					customer.setCustomerType(bronze);
+					break;
+				}
+				else if(customer.getPoints() < gold.getRequiredPoints()) {
+					customer.setCustomerType(silver);
+					break;
+				}
+			}
+		}
+			
+		save();
+		
+	}
+
 }

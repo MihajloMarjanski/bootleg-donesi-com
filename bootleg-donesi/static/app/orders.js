@@ -5,6 +5,7 @@ Vue.component("orders",{
             user:{
                 entityID:"",
                 role:"",
+                username:""
             },
             orders:"",
             searchParams:{
@@ -17,9 +18,13 @@ Vue.component("orders",{
                 dateTo:"",
                 restaurantType:"",
                 ordreStatus:"",
-                sort:""
+                sort:"",
+                username:""
             },
-
+            reqOrder:{
+                username:"",
+                orderID:"",
+            }
 
 
         }
@@ -27,8 +32,10 @@ Vue.component("orders",{
     mounted(){
         this.user.entityID = localStorage.getItem('id')
         this.user.role = localStorage.getItem('role')
+        this.user.username = localStorage.getItem('username')
         this.searchParams.entityID = this.user.entityID
         this.searchParams.role = this.user.role
+        this.searchParams.username = this.user.username
         axios
         .post('/getOrders',this.user)
         .then(response=>{
@@ -81,14 +88,16 @@ Vue.component("orders",{
     </div>
     <table style="width:99.999%">
         <thead>
+            <th style="width:10%">Order ID</th>
             <th v-if="user.role === 'CUSTOMER' || user.role === 'COURIER'" style="width:20%">Restaurant</th>
             <th style="width:20%">Price</th>
             <th style="width:20%">Date</th>
             <th style="width:20%">Status</th>
-            <th style="width:5%"></th>
+            <th style="width:10%"></th>
         </thead>
         <tbody>
             <tr class="nopointerrow" v-for="o in orders" style="height:40px">
+                <td style="width:10%">{{o.orderID}}</td>
                 <td v-if="user.role === 'CUSTOMER' || user.role === 'COURIER'" style="width:20%">{{o.restaurantName}}</td>
                 <td style="width:20%">{{o.price}}</td>
                 <td style="width:20%">{{o.timeOfOrder}}</td>
@@ -96,6 +105,10 @@ Vue.component("orders",{
                 <td v-if="o.orderStatus === 'WAITING'" style="width:20%">WAITING FOR TRANSPORT</td>
                 <td v-if="o.orderStatus === 'TRANSPORT'" style="width:20%">IN TRANSPORT</td>
                 <td v-if="o.orderStatus !== 'TRANSPORT' && o.orderStatus !== 'WAITING' && o.orderStatus !== 'INPREP'" style="width:20%">{{o.orderStatus}}</td>
+                <td v-if="o.orderStatus === 'PROCESSING' && user.role === 'CUSTOMER'" style="width:10%"><button type= "button" v-on:click="cancel(o)">Cancel</button> </td>
+                <td v-if="o.orderStatus === 'INPREP' && user.role === 'MENAGER'" style="width:10%"><button type= "button" v-on:click="finish(o)">Finish Preperation</button> </td>
+                <td v-if="o.orderStatus === 'TRANSPORT' && user.role === 'COURIER'" style="width:10%"><button type= "button" v-on:click="deliver(o)">Order Delivered</button> </td>
+                <td v-if="o.orderStatus === 'WAITING' && user.role === 'COURIER'" style="width:10%"><button type= "button" v-on:click="request(o)">Request Order</button> </td>
             </tr>
         </tbody>
     </table>
@@ -111,6 +124,71 @@ Vue.component("orders",{
             .post('/searchOrders', this.searchParams)
             .then(response=>{
                 this.orders = response.data
+            })
+            .catch((error) => {
+              });
+        },
+
+        cancel(order){
+            this.reqOrder.username = localStorage.getItem("username")
+            this.reqOrder.orderID = order.entityID
+            axios
+            .post('/cancelOrder', this.reqOrder)
+            .then(response=>{
+                axios
+                .post('/searchOrders', this.searchParams)
+                .then(response=>{
+                    this.orders = response.data
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+              });
+        },
+        finish(order){
+            axios
+            .post('/finishOrder', order)
+            .then(response=>{
+                axios
+                .post('/searchOrders', this.searchParams)
+                .then(response=>{
+                    this.orders = response.data
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+              });
+        },
+        request(order){
+            this.reqOrder.username = localStorage.getItem("username")
+            this.reqOrder.orderID = order.entityID
+            axios
+            .post('/requestOrder', this.reqOrder)
+            .then(response=>{
+                axios
+                .post('/searchOrders', this.searchParams)
+                .then(response=>{
+                    this.orders = response.data
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+              });
+        },
+        deliver(order){
+            axios
+            .post('/deliverOrder', order)
+            .then(response=>{
+                axios
+                .post('/searchOrders', this.searchParams)
+                .then(response=>{
+                    this.orders = response.data
+                })
+                .catch((error) => {
+                  });
             })
             .catch((error) => {
               });

@@ -16,6 +16,7 @@ public class Order extends Entity{
 	protected Integer courier;
 	protected String restaurantName;
 	protected RestaurantType restaurantType;
+	protected ArrayList<String> requests;
 	
 	public Order() {
 		
@@ -35,11 +36,22 @@ public class Order extends Entity{
 		this.courier = courier;
 		this.restaurantName = restaurantName;
 		this.restaurantType = restaurantType;
+		this.requests = new ArrayList<String>();
 	}
 	
 	
 	
 	
+	public ArrayList<String> getRequests() {
+		return requests;
+	}
+
+
+	public void setRequests(ArrayList<String> requests) {
+		this.requests = requests;
+	}
+
+
 	public String getRestaurantName() {
 		return restaurantName;
 	}

@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import javax.swing.ToolTipManager;
+
 import com.google.gson.Gson;
 
 import dto.RestaurantDTO;
@@ -26,6 +28,7 @@ import model.Restaurant;
 import model.Role;
 import model.User;
 import services.AdminService;
+import services.CheckerThread;
 import services.CommentService;
 import services.CourierService;
 import services.CustomerService;
@@ -51,6 +54,8 @@ public class SparkAppMain {
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws Exception {
 		port(9090);
+		CheckerThread checker = new CheckerThread(orderService, customerService);
+		checker.start();
 		
 		customerService.load();
 		menagerService.load();
@@ -620,7 +625,7 @@ public class SparkAppMain {
 				orders = orderService.getForCustomer(user.getEntityID());
 			}
 			else if(user.getRole() == Role.COURIER) {
-				orders = orderService.getForCourier(user.getEntityID());
+				orders = orderService.getForCourier(user.getEntityID(),user.getUsername());
 			}
 			else if(user.getRole() == Role.MENAGER) {
 				orders = orderService.getForRestaurant(menagerService.getRestaurantID(user.getEntityID()));
@@ -645,6 +650,7 @@ public class SparkAppMain {
 			String restaurantType = searchParams.get("restaurantType");
 			String ordreStatus = searchParams.get("ordreStatus");
 			String sort = searchParams.get("sort");
+			String username = searchParams.get("username");
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			
 			
@@ -654,7 +660,7 @@ public class SparkAppMain {
 				orders = orderService.getForCustomer(Integer.parseInt(id),ordreStatus,restaurantType);
 			}
 			else if(role.equals("COURIER")) {
-				orders = orderService.getForCourier(Integer.parseInt(id),ordreStatus,restaurantType);
+				orders = orderService.getForCourier(Integer.parseInt(id),ordreStatus,restaurantType,username);
 			}
 			else if(role.equals("MENAGER")) {
 				orders = orderService.getForRestaurant(menagerService.getRestaurantID(Integer.parseInt(id)),ordreStatus,restaurantType);
@@ -741,6 +747,140 @@ public class SparkAppMain {
 			
 			res.status(200);
 			return g.toJson(orders);
+			
+		});
+		
+		post("/finishOrder", (req, res) -> {
+			res.type("application/json");
+			Order order = g.fromJson(req.body(), Order.class);
+			orderService.finishOrder(order.getEntityID());
+			
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/deliverOrder", (req, res) -> {
+			res.type("application/json");
+			Order order = g.fromJson(req.body(), Order.class);
+			orderService.deliverOrder(order.getEntityID());
+			
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/requestOrder", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, Object> reqParams = g.fromJson(req.body(), HashMap.class);
+			double orderID = (double)reqParams.get("orderID");
+			String username = (String)reqParams.get("username");
+			int orderIDInt = (int) orderID;
+			orderService.addRequest(orderIDInt,username);
+			
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/getMyCustomers", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);		
+			ArrayList<Customer> customers = new ArrayList<Customer>();
+			
+			ArrayList<Integer> customerIDs = orderService.getCustomerIDs(menagerService.getRestaurantID(user.getUsername()));
+			customers = customerService.getForIDs(customerIDs);
+			
+			res.status(200);
+			return g.toJson(customers);
+			
+		});
+		
+		post("/getMyRequests", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);		
+			ArrayList<Order> requests = new ArrayList<Order>();
+			
+			requests = orderService.getRequests(menagerService.getRestaurantID(user.getUsername()));
+			
+			res.status(200);
+			return g.toJson(requests);
+			
+		});
+		
+		post("/approveTransport", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, Object> reqParams = g.fromJson(req.body(), HashMap.class);
+			double orderID = (double)reqParams.get("reqEntityID");
+			String username = (String)reqParams.get("courier");
+			int orderIDInt = (int) orderID;
+			
+			Courier courier = courierService.getCourierByUsername(username);
+			
+			orderService.approveTransportFor(orderIDInt,courier.getEntityID());
+			courierService.addOrderToCourier(orderIDInt,courier.getEntityID());
+					
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/denyTransport", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, Object> reqParams = g.fromJson(req.body(), HashMap.class);
+			double orderID = (double)reqParams.get("reqEntityID");
+			String username = (String)reqParams.get("courier");
+			int orderIDInt = (int) orderID;
+
+			
+			orderService.denyTransportFor(orderIDInt,username);
+					
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/cancelOrder", (req, res) -> {
+			res.type("application/json");
+			HashMap<String, Object> reqParams = g.fromJson(req.body(), HashMap.class);
+			double orderID = (double)reqParams.get("orderID");
+			String username = (String)reqParams.get("username");
+			int orderIDInt = (int) orderID;
+			int customerID = customerService.getCustomerByUsername(username).getEntityID();
+			Order order = orderService.getOrderByID(orderIDInt);
+			double pointsLost = order.getPrice()/1000 * 133 * 4;
+			
+			orderService.cancelOrder(orderIDInt);
+			customerService.updateSuspicion(customerID,orderService.checkSuspicion(customerID));
+			customerService.removePoints(customerID, pointsLost);
+			
+			
+			res.status(200);
+			return "OK";
+			
+		});
+		
+		post("/canIComment", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			Customer customer = customerService.getCustomerByUsername(user.getUsername());
+			ArrayList<Integer> orderIDs = new ArrayList<Integer>();
+			
+			for (Order order : orderService.getForCustomer(customer.getEntityID())) {
+				orderIDs.add(order.getEntityID());
+			}
+			
+			
+			
+			if(commentService.checkCommentable(orderIDs, user.getEntityID(), customer.getEntityID())) {
+				res.status(200);
+				return g.toJson(true);
+			}
+			else {
+				res.status(200);
+				return g.toJson(false);
+			}
+
 			
 		});
 		

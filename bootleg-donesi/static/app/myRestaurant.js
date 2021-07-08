@@ -16,7 +16,8 @@ Vue.component("myRestaurant",{
                 <button type= "button" v-on:click="menuitem">Add Menu Item</button>
                 <button type= "button" v-on:click="comments">Comments</button>
                 <button type= "button" v-on:click="orders">Orders</button>
-                <button type= "button" v-on:click="customers">Customers</button>   
+                <button type= "button" v-on:click="customers">Customers</button>
+                <button type= "button" v-on:click="requests">Transport Requests</button>
             </div>
             <div v-if="window === 'INFO'">
                 <myRestaurantInfo></myRestaurantInfo>
@@ -34,7 +35,10 @@ Vue.component("myRestaurant",{
                 <orders></orders>
             </div>
             <div v-if="window === 'CUSTOMERS'">
-                <myCusotmers></myCusotmers>
+                <myCustomers></myCustomers>
+            </div>
+            <div v-if="window === 'REQUESTS'">
+                <myRequests></myRequests>
             </div>         
         </div>
 
@@ -57,6 +61,9 @@ Vue.component("myRestaurant",{
         },
         customers(){
             this.window = "CUSTOMERS"
+        },
+        requests(){
+            this.window = "REQUESTS"
         },
     }
 

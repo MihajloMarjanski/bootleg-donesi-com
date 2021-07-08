@@ -5,6 +5,10 @@ public class CustomerType {
 	protected double discount;
 	protected double requiredPoints;
 	
+	public CustomerType(){
+		
+	}
+	
 	public String getTypeName() {
 		return typeName;
 	}

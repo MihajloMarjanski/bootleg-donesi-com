@@ -67,7 +67,7 @@ public class CourierService {
 	
 	public static boolean loginCourier(String username, String password) {
 		for (Courier courier : courierList) {
-			if (courier.getUsername().equals(username) && courier.getPassword().equals(password) && !courier.isDeleted() && !courier.isSuspicious()) {
+			if (courier.getUsername().equals(username) && courier.getPassword().equals(password) && !courier.isDeleted() && !courier.isBlocked()) {
 				return true;
 			}
 		}
@@ -143,6 +143,16 @@ public class CourierService {
 		}
 		save();
 		
+	}
+
+	public void addOrderToCourier(int orderIDInt, int entityID) {
+		for (Courier courier: getAll()) {
+			if (courier.getEntityID() == entityID) {
+				courier.getOrders().add(orderIDInt);
+				break;
+			}
+		}
+		save();
 	}
 	
 	

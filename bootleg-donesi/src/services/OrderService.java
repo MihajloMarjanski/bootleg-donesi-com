@@ -1,5 +1,7 @@
 package services;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -23,10 +25,17 @@ public class OrderService {
 	
 	public static void load() {
 		orderList.add(new Order(1, "OR1", new ArrayList<Integer>(), 1, new Date(), 220.0, 1,OrderStatus.TRANSPORT, 1,"FLIPERANA",RestaurantType.ITALIAN));
-		orderList.add(new Order(2, "OR2", new ArrayList<Integer>(), 1, new Date(), 777.0, 1,OrderStatus.WAITING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		Order order = new Order(2, "OR2", new ArrayList<Integer>(), 1, new Date(), 777.0, 1,OrderStatus.WAITING, 0,"FLIPERANA",RestaurantType.ITALIAN);
+		order.getRequests().add("courier");
+		orderList.add(order);
 		orderList.add(new Order(3, "OR3", new ArrayList<Integer>(), 1, new Date(), 666.0, 1,OrderStatus.INPREP, 0,"FLIPERANA",RestaurantType.ITALIAN));
 		orderList.add(new Order(4, "OR4", new ArrayList<Integer>(), 1, new Date(), 666.0, 1,OrderStatus.DELIVERED, 1,"FLIPERANA",RestaurantType.ITALIAN));
-		
+		orderList.add(new Order(5, "OR5", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(6, "OR6", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(7, "OR7", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(8, "OR8", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(9, "OR9", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(10, "OR10", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
 	}
 	
 	private static Integer generateID() 
@@ -61,13 +70,13 @@ public class OrderService {
 		return orders;
 	}
 
-	public static ArrayList<Order> getForCourier(int entityID) {
+	public static ArrayList<Order> getForCourier(int entityID, String username) {
 		ArrayList<Order> orders = new ArrayList<Order>();
 		for (Order order: getAll()) {
 			if (order.getCourier() == entityID && order.getOrderStatus() != OrderStatus.DELIVERED && order.getOrderStatus() != OrderStatus.CANCELED) {
 				orders.add(order);
 			}
-			if(order.getOrderStatus() == OrderStatus.WAITING) {
+			if(order.getOrderStatus() == OrderStatus.WAITING && !order.getRequests().contains(username)) {
 				orders.add(order);
 			}
 		}	
@@ -154,7 +163,7 @@ public class OrderService {
 		return orders;
 	}
 
-	public static ArrayList<Order> getForCourier(int entityID, String ordreStatus, String restaurantType) {
+	public static ArrayList<Order> getForCourier(int entityID, String ordreStatus, String restaurantType, String username) {
 		RestaurantType type = null;
 		OrderStatus status = null;
 		
@@ -199,7 +208,7 @@ public class OrderService {
 			if (order.getCourier() == entityID && order.getOrderStatus() != OrderStatus.DELIVERED && order.getOrderStatus() != OrderStatus.CANCELED) {
 				orders.add(order);
 			}
-			if(order.getOrderStatus() == OrderStatus.WAITING) {
+			if(order.getOrderStatus() == OrderStatus.WAITING && !order.getRequests().contains(username)) {
 				orders.add(order);
 			}
 		}
@@ -292,6 +301,127 @@ public class OrderService {
 		
 		return orders;
 		
+	}
+
+	public static void finishOrder(int entityID) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == entityID && order.getOrderStatus() == OrderStatus.INPREP){
+				order.setOrderStatus(OrderStatus.WAITING);
+				break;
+			}
+		}
+		save();
+	}
+
+	public static void deliverOrder(int entityID) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == entityID && order.getOrderStatus() == OrderStatus.TRANSPORT){
+				order.setOrderStatus(OrderStatus.DELIVERED);
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public static void addRequest(int entityID, String username) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == entityID && order.getOrderStatus() == OrderStatus.WAITING){
+				order.getRequests().add(username);
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public static ArrayList<Integer> getCustomerIDs(int restaurantID) {
+		ArrayList<Integer> returnIDs = new ArrayList<Integer>();
+		for (Order order : getAll()) {
+			if(order.getRestaurant() == restaurantID && !returnIDs.contains(order.getCustomer())){
+				returnIDs.add(order.getCustomer());
+			}
+		}
+		return returnIDs;
+	}
+
+	public static ArrayList<Order> getRequests(int restaurantID) {
+		ArrayList<Order> requests = new ArrayList<Order>();
+		for (Order order : getAll()) {
+			if(order.getRestaurant() == restaurantID && !order.getRequests().isEmpty()){
+				requests.add(order);
+			}
+		}
+		return requests;
+	}
+
+	public static void approveTransportFor(int orderIDInt, int entityID) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == orderIDInt){
+				order.setCourier(entityID);
+				order.getRequests().clear();
+				order.setOrderStatus(OrderStatus.TRANSPORT);
+				break;
+			}
+		}
+		save();
+	}
+	
+	public static void denyTransportFor(int orderIDInt, String username) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == orderIDInt){
+				order.getRequests().remove(username);
+				break;
+			}
+		}
+		save();
+	}
+	
+	public static boolean checkSuspicion(int customerID) {
+		Instant now = Instant.now();
+		Instant before = now.minus(Duration.ofDays(30));
+		Date date30DaysAgo = Date.from(before);
+		
+		
+		ArrayList<Order> forCheck = new ArrayList<Order>();
+		for (Order order : getAll()) {
+			if(order.getCustomer() == customerID && order.getTimeOfOrder().after(date30DaysAgo)) {
+				forCheck.add(order);
+			}
+		}
+		
+		int canceledNum = 0;
+		
+		for (Order order : forCheck) {
+			if(order.getOrderStatus() == OrderStatus.CANCELED) {
+				canceledNum++;
+			}
+			if (canceledNum > 4) {
+				
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static void cancelOrder(int orderIDInt) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == orderIDInt){
+				order.setOrderStatus(OrderStatus.CANCELED);;
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public static Order getOrderByID(int orderIDInt) {
+		for (Order order : getAll()) {
+			if(order.getEntityID() == orderIDInt){
+				return order;
+			}
+		}
+		return null;
 	}
 	
 }

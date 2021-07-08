@@ -132,4 +132,13 @@ public class CommentService {
 		
 	}
 	
+	public static boolean checkCommentable(ArrayList<Integer> orders, int restauratn, int customer) {
+		for (Comment comment : getAll()) {
+			if(comment.getCustomer() == customer && comment.getRestaurant() == restauratn && orders.contains(comment.getOrder())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
