@@ -12,6 +12,7 @@ import model.Restaurant;
 import model.RestaurantStatus;
 import model.RestaurantType;
 import model.Role;
+import model.ShoppingCart;
 import model.User;
 
 public class RestaurantService {
@@ -24,13 +25,13 @@ public class RestaurantService {
 	
 	public static void load() {
 		Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270","Vojvodina"));
-		restaurantList.add(new Restaurant(1,"FLIPERANA",RestaurantType.ITALIAN,RestaurantStatus.CLOSED,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
-		restaurantList.add(new Restaurant(2,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
-		restaurantList.add(new Restaurant(3,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>()));
+		restaurantList.add(new Restaurant(1,"FLIPERANA",RestaurantType.ITALIAN,RestaurantStatus.CLOSED,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"Pera"));
+		restaurantList.add(new Restaurant(2,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"" ));
+		restaurantList.add(new Restaurant(3,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"" ));
 		
 	}
 	
-	private static Integer generateID() 
+	public static Integer generateID() 
 	{
 		int id = 0;
 		for (Restaurant restaurant : restaurantList) {
@@ -148,6 +149,18 @@ public class RestaurantService {
 				break;
 			}
 		}
+		save();
+		
+	}
+
+	public static void addRestaurant(Restaurant restaurant) {
+		restaurant.setEntityID(generateID());
+		restaurant.setDeleted(false);
+		restaurant.setMenuItems(new ArrayList<Integer>());
+		restaurant.setLogoPath("restaurantPictures/melenac1.jpg");
+		restaurant.setStatus(RestaurantStatus.OPEN);
+		
+		restaurantList.add(restaurant);
 		save();
 		
 	}

@@ -30,6 +30,7 @@ public class CourierService {
 		courier.setOrders(new ArrayList<Integer>());
 		courier.setBlocked(false);
 		courier.setSuspicious(false);
+		courier.setDeleted(false);
 		courierList.add(courier);
 		save();
 	}

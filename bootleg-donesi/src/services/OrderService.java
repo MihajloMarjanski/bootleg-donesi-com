@@ -35,7 +35,7 @@ public class OrderService {
 		orderList.add(new Order(7, "OR7", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
 		orderList.add(new Order(8, "OR8", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
 		orderList.add(new Order(9, "OR9", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
-		orderList.add(new Order(10, "OR10", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
+		orderList.add(new Order(10, "OR10", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.CANCELED, 0,"FLIPERANA",RestaurantType.ITALIAN));
 	}
 	
 	private static Integer generateID() 
@@ -422,6 +422,17 @@ public class OrderService {
 			}
 		}
 		return null;
+	}
+
+	public static int getDeliveredForCustomerAndRestaurant(int user, int restaurant) {
+		int delivered = 0;
+		for (Order order : getAll()) {
+			if(order.getCustomer() == user && order.getRestaurant() == restaurant && order.getOrderStatus() == OrderStatus.DELIVERED) {
+				delivered++;
+			}
+		}
+		
+		return delivered;
 	}
 	
 }

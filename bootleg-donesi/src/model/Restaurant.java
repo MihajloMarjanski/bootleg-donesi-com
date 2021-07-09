@@ -10,10 +10,11 @@ public class Restaurant extends Entity{
 	protected Location location;
 	protected String logoPath;
 	protected Integer rating; 
+	protected String username;
 	protected ArrayList<Integer> menuItems;
 	
 	public Restaurant(int entityID, String name, RestaurantType type, RestaurantStatus status, Location location,
-			String logoPath, ArrayList<Integer> menuItems) {
+			String logoPath, ArrayList<Integer> menuItems, String username) {
 		super(entityID);
 		this.name = name;
 		this.type = type;
@@ -22,8 +23,23 @@ public class Restaurant extends Entity{
 		this.logoPath = logoPath;
 		this.menuItems = menuItems;
 		this.rating = 0;
+		this.username = username;
 	}
 	
+	
+	
+	public String getUsername() {
+		return username;
+	}
+
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+
 	public Restaurant() {
 	}
 	

@@ -19,8 +19,7 @@ public class CheckerThread extends Thread{
 	public void run() {
 		while(true) {
 			for (Customer customer : customerService.getAll()) {
-				customerService.updateSuspicion(customer.getEntityID(),orderService.checkSuspicion(customer.getEntityID()));			
-				
+				customerService.updateSuspicion(customer.getEntityID(),orderService.checkSuspicion(customer.getEntityID()));
 			}
 			try {
 				sleep(21600000);

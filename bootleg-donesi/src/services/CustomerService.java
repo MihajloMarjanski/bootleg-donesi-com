@@ -82,6 +82,7 @@ public class CustomerService {
 		customer.setCustomerType(normal);
 		customer.setBlocked(false);
 		customer.setSuspicious(false);
+		customer.setDeleted(false);
 		customerList.add(customer);
 		save();
 	}

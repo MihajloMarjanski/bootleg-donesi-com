@@ -2,6 +2,10 @@ Vue.component("allRestaurants",{
 
     data: function(){
         return{
+            zoom: 15,
+            center: [20.395587077688546, 45.38230342193068],
+            location: [20.395587077688546, 45.38230342193068],
+            rotation: 0,
             restaurants:"",
             searchParmas:{
                 name:"",
@@ -28,6 +32,13 @@ Vue.component("allRestaurants",{
             commentReq:{
                 username:"",
                 entityID:"",
+            },
+            comment:{
+                restaurant:"",
+                customer:"",
+                rating:1,
+                text:"",
+                username:""
             }
 
         }
@@ -139,6 +150,25 @@ Vue.component("allRestaurants",{
                         </tr>                                            
                         </tbody>
                     </table>
+                    <div class="container">
+                    <vl-map data-projection="EPSG:4326" style="height: 500px; width: 500px">
+                    <vl-view :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation"></vl-view>
+                        <vl-layer-tile>
+                        <vl-source-osm></vl-source-osm>
+                        </vl-layer-tile>
+                                <vl-feature>
+                        <vl-geom-point :coordinates="location">
+                        </vl-geom-point>
+                        <vl-style-box>
+                            <vl-style-icon
+                                src="/marker/marker.png"
+                                :scale="0.05"
+                                :anchor="[0.5, 1]"
+                            ></vl-style-icon>
+                        </vl-style-box>
+                        </vl-feature>
+                    </vl-map>
+                    </div>
                 </div>
                 <h1>Menu</h1>
                 <div>
@@ -163,6 +193,11 @@ Vue.component("allRestaurants",{
                     </table>            
                 </div>
                 <h1 v-if="commentable">Leave a comment</h1>
+                <div v-if="commentable">
+                    <input style="width:85%" type="text" v-model="comment.text" placeholder = "Comment"/>
+                    <input :class="{invalid:comment.rating < 1 || comment.rating > 5}" style="width:5%" type="number" v-model="comment.rating" placeholder = "Rating"/>
+                    <button type= "button" v-on:click="makeComment()">Make Comment</button>
+                </div>
                 <h1 v-if="!myRes">Comments</h1>
                 <div v-if="!myRes">
                     <table style="width:99.999%">
@@ -196,6 +231,10 @@ Vue.component("allRestaurants",{
             .post('/viewRestaurant', this.reqparams)
             .then(response=>{
                 this.restaurantDTO = response.data
+                this.location[0] = this.restaurantDTO.location.geoLatitude
+                this.location[1] = this.restaurantDTO.location.geoLongitute
+                console.log(this.location)
+                this.center = this.location
                 if(this.role === 'MENAGER'){
                     axios
                     .post('/getMyRestaurant',this.user)
@@ -211,10 +250,50 @@ Vue.component("allRestaurants",{
                     .post('/canIComment',this.commentReq)
                     .then(response=>{
                         this.commentable = response.data
+                        this.comment.customer = localStorage.getItem("id")
+                        this.comment.username = localStorage.getItem("username")
+                        this.comment.restaurant = this.restaurantDTO.entityID
                     })
                 }
             })
             .catch((error) => {
+              });
+        },
+        makeComment(){
+            axios
+            .post('/makeComment', this.comment)
+            .then(response=>{
+                axios
+                .post('/viewRestaurant', this.reqparams)
+                .then(response=>{
+                    this.restaurantDTO = response.data
+                    if(this.role === 'MENAGER'){
+                        axios
+                        .post('/getMyRestaurant',this.user)
+                        .then(response=>{
+                            this.myResId = response.data
+                            this.myRes = this.myResId == this.restaurantDTO.entityID
+                        })
+                    }
+                    if(this.role === 'CUSTOMER'){
+                        this.commentReq.username = localStorage.getItem("username")
+                        this.commentReq.entityID = this.restaurantDTO.entityID
+                        axios
+                        .post('/canIComment',this.commentReq)
+                        .then(response=>{
+                            this.commentable = response.data
+                            this.comment.customer = localStorage.getItem("id")
+                            this.comment.username = localStorage.getItem("username")
+                            this.comment.restaurant = this.restaurantDTO.entityID
+                        })
+                    }
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+                console.log("Error");
+                alert("Rating from 1 to 5");
               });
         },
         deleteComment(comment){

@@ -5,9 +5,11 @@ public class Menager extends User{
 
 	protected Integer restaurant;
 	
+	
 	public Menager() {
 		restaurant = 0;
 	}
+	
 	
 	public Menager(int entityID, String username, String password, String firtName, String lastName, Gender gender,
 			String dateOfBirth, Role role, Integer restoran) {

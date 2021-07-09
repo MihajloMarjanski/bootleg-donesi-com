@@ -21,6 +21,8 @@ public class MenagerService {
 	public static void load() {
 		menagerList.add(new Menager(1, "Pera", "123", "Petar", "Petrovic", Gender.MALE,
 				"1999-09-15", Role.MENAGER, 1));
+		menagerList.add(new Menager(2, "Pera2", "123", "Petar", "Petrovic", Gender.MALE,
+				"1999-09-15", Role.MENAGER, 0));
 	}
 	
 	public static void addMenager(Menager menager) {
@@ -30,6 +32,7 @@ public class MenagerService {
 		menager.setRestaurant(0);
 		menager.setBlocked(false);
 		menager.setSuspicious(false);
+		menager.setDeleted(false);
 		menagerList.add(menager);
 		save();
 	}
@@ -163,6 +166,26 @@ public class MenagerService {
 			}
 		}
 		save();
+		
+	}
+
+	public ArrayList<Menager> getAvailable() {
+		ArrayList<Menager> menagers = new ArrayList<Menager>();
+		for (Menager menager : getAll()) {
+			if(menager.getRestaurant() == 0) {
+				menagers.add(menager);
+			}
+		}
+		return menagers;
+	}
+
+	public static void addRestaurantToMenager(String username, Integer generateID) {
+		for (Menager menager : getAll()) {
+			if(menager.getUsername().equals(username)) {
+				menager.setRestaurant(generateID);
+				break;
+			}
+		}
 		
 	}
 	

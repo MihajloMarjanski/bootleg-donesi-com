@@ -15,9 +15,9 @@ public class CommentService {
 	}
 	
 	public static void load() {
-		commentList.add(new Comment(1, 1, 1, 1, 4, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
-		commentList.add(new Comment(2, 1, 2, 1, 3, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
-		commentList.add(new Comment(3, 1, 3, 1, 4, "Sranje",CommentStatus.WAITING,"Mihajlo"));
+		commentList.add(new Comment(1, 1, 2, 4, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
+		commentList.add(new Comment(2, 1, 2, 3, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
+		commentList.add(new Comment(3, 1, 2, 4, "Sranje",CommentStatus.WAITING,"Mihajlo"));
 		
 	}
 	
@@ -132,13 +132,29 @@ public class CommentService {
 		
 	}
 	
-	public static boolean checkCommentable(ArrayList<Integer> orders, int restauratn, int customer) {
+	public static boolean checkCommentable(int delivered, int restauratn, int customer) {
+		int comments = 0;
 		for (Comment comment : getAll()) {
-			if(comment.getCustomer() == customer && comment.getRestaurant() == restauratn && orders.contains(comment.getOrder())) {
-				return true;
+			if(comment.getCustomer() == customer && comment.getRestaurant() == restauratn) {
+				comments++;
 			}
 		}
-		return false;
+		
+		if(comments < delivered) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+
+	public static void addComment(Comment comment) {
+		comment.setApproved(CommentStatus.WAITING);
+		comment.setEntityID(generateID());
+		comment.setDeleted(false);
+		commentList.add(comment);
+		save();
 	}
 	
 }

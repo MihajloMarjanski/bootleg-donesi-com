@@ -53,10 +53,7 @@ public class SparkAppMain {
 	
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws Exception {
-		port(9090);
-		CheckerThread checker = new CheckerThread(orderService, customerService);
-		checker.start();
-		
+		port(9090);		
 		customerService.load();
 		menagerService.load();
 		courierService.load();
@@ -65,6 +62,9 @@ public class SparkAppMain {
 		commentService.load();
 		menuItemService.load();
 		orderService.load();
+		
+		CheckerThread checker = new CheckerThread(orderService, customerService);
+		checker.start();
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 		
@@ -864,15 +864,15 @@ public class SparkAppMain {
 			res.type("application/json");
 			User user = g.fromJson(req.body(), User.class);
 			Customer customer = customerService.getCustomerByUsername(user.getUsername());
-			ArrayList<Integer> orderIDs = new ArrayList<Integer>();
 			
-			for (Order order : orderService.getForCustomer(customer.getEntityID())) {
-				orderIDs.add(order.getEntityID());
+			int delivered = orderService.getDeliveredForCustomerAndRestaurant(customer.getEntityID(),user.getEntityID());
+			if(delivered == 0) {
+				res.status(200);
+				return g.toJson(false);
 			}
 			
 			
-			
-			if(commentService.checkCommentable(orderIDs, user.getEntityID(), customer.getEntityID())) {
+			if(commentService.checkCommentable(delivered, user.getEntityID(), customer.getEntityID())) {
 				res.status(200);
 				return g.toJson(true);
 			}
@@ -883,6 +883,48 @@ public class SparkAppMain {
 
 			
 		});
+		
+		post("/makeComment", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+
+			if(comment.getRating() <1 || comment.getRating() > 5) {
+				res.status(404);
+				return g.toJson(false);
+			}
+			else {
+				commentService.addComment(comment);
+				res.status(200);
+				return g.toJson(true);
+			}
+					
+		});
+		
+		get("/availableMenagers", (req, res) -> {
+			res.type("application/json");
+
+			ArrayList<Menager> menagers = menagerService.getAvailable();
+			if (menagers.isEmpty()) {
+				res.status(200);
+				return g.toJson("");
+			}
+			res.status(200);
+			return g.toJson(menagers);
+					
+		});
+		
+		post("/addRestaurant", (req, res) -> {
+			res.type("application/json");
+			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
+			menagerService.addRestaurantToMenager(restaurant.getUsername(),restaurantService.generateID());
+			restaurantService.addRestaurant(restaurant);
+
+			res.status(200);
+			return g.toJson("");
+					
+		});
+		
+		
 		
 	}
 }

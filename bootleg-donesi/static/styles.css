@@ -1,6 +1,3 @@
-tr.selected {
-	background: rgb(51, 159, 196);
-}
 tr {
 	cursor: pointer;
 	border: 1px solid rgb(136, 82, 0);
@@ -12,15 +9,6 @@ tr {
 }
 .nopointerrow {
 	cursor: default;
-}
-
-
-#error {
-	color: red;
-}
-
-#success {
-	color: green;	
 }
 
 table{
@@ -39,10 +27,14 @@ th{
 	color: rgb(100, 60, 0);
 	font-style: italic;
 }
-
-div{
+body{
 	background-color: bisque;
 }
+
+div{
+	background-color: transparent;
+}
+
 html{
 	background-color: bisque;
 }
