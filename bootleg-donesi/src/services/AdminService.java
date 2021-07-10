@@ -1,7 +1,15 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import model.Admin;
@@ -14,14 +22,36 @@ public class AdminService {
 	public static ArrayList<Admin> adminList = new ArrayList<Admin>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"admins.json"));
+
+		    gson.toJson(adminList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		adminList.add(new Admin(1, "Mihajlo", "123", "Mihajlo", "Marjanski", Gender.MALE,
-			"1999-09-15", Role.ADMINISTRATOR));
-		adminList.add(new Admin(2, "Andrija", "123", "Andrija", "Bosnjakovic", Gender.MALE,
-				"1999-09-15", Role.ADMINISTRATOR));
+		
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"admins.json"));
+
+		    Admin[] admins = gson.fromJson(reader, Admin[].class);
+		    Collections.addAll(adminList, admins);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+		
 	}
 	
 	/*private static Integer generateID() 

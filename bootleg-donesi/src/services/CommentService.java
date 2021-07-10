@@ -1,8 +1,16 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 
+import model.Admin;
 import model.Comment;
 import model.CommentStatus;
 
@@ -11,13 +19,35 @@ public class CommentService {
 	public static ArrayList<Comment> commentList = new ArrayList<Comment>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"comments.json"));
+
+		    gson.toJson(commentList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		commentList.add(new Comment(1, 1, 2, 4, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
-		commentList.add(new Comment(2, 1, 2, 3, "Nije lose",CommentStatus.APPROVED,"Mihajlo"));
-		commentList.add(new Comment(3, 1, 2, 4, "Sranje",CommentStatus.WAITING,"Mihajlo"));
+		
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"comments.json"));
+
+		    Comment[] comments = gson.fromJson(reader, Comment[].class);
+		    Collections.addAll(commentList, comments);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}		
 		
 	}
 	

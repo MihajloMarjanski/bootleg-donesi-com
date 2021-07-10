@@ -1,14 +1,23 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+
 import model.Adress;
 import model.Location;
+import model.MenuItem;
 import model.Order;
 import model.OrderStatus;
 import model.Restaurant;
@@ -20,10 +29,36 @@ public class OrderService {
 	public static ArrayList<Order> orderList = new ArrayList<Order>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"orders.json"));
+
+		    gson.toJson(orderList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
+		
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"orders.json"));
+
+		    Order[] orders = gson.fromJson(reader, Order[].class);
+		    Collections.addAll(orderList, orders);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+		/*
 		orderList.add(new Order(1, "OR1", new ArrayList<Integer>(), 1, new Date(), 220.0, 1,OrderStatus.TRANSPORT, 1,"FLIPERANA",RestaurantType.ITALIAN));
 		Order order = new Order(2, "OR2", new ArrayList<Integer>(), 1, new Date(), 777.0, 1,OrderStatus.WAITING, 0,"FLIPERANA",RestaurantType.ITALIAN);
 		order.getRequests().add("courier");
@@ -36,6 +71,7 @@ public class OrderService {
 		orderList.add(new Order(8, "OR8", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
 		orderList.add(new Order(9, "OR9", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.PROCESSING, 0,"FLIPERANA",RestaurantType.ITALIAN));
 		orderList.add(new Order(10, "OR10", new ArrayList<Integer>(), 1, new Date(), 4214.0, 1,OrderStatus.CANCELED, 0,"FLIPERANA",RestaurantType.ITALIAN));
+	*/
 	}
 	
 	private static Integer generateID() 

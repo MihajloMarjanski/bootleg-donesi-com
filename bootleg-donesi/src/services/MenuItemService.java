@@ -1,8 +1,16 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 
+import model.Menager;
 import model.MenuItem;
 import model.MenuItemType;
 import model.QuantityType;
@@ -12,15 +20,35 @@ public class MenuItemService {
 	public static ArrayList<MenuItem> menuItemList = new ArrayList<MenuItem>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"menuitems.json"));
+
+		    gson.toJson(menuItemList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		menuItemList.add(new MenuItem(1, "Cola", 100, MenuItemType.DRINK, 1, 300,
-				QuantityType.MILLILITERS, "Coca-Cola can", "menuPictures/melenac1.png"));
-		menuItemList.add(new MenuItem(2, "English breakfast", 500, MenuItemType.FOOD, 1, 300,
-				QuantityType.GRAMS, "Two cooked eggs and bacon strips", "menuPictures/melenac1.png"));
 		
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"menuitems.json"));
+
+		    MenuItem[] menuItems = gson.fromJson(reader, MenuItem[].class);
+		    Collections.addAll(menuItemList, menuItems);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	private static Integer generateID() 
@@ -114,6 +142,16 @@ public class MenuItemService {
 				break;
 			}
 		}
+	}
+
+	public static void deleteForRestaurant(int entityID) {
+		for (MenuItem menuItem : getAll()) {
+			if(menuItem.getRestaurant() == entityID) {
+				menuItem.setDeleted(true);
+			}
+		}
+		save();
+		
 	}
 	
 }

@@ -1,13 +1,23 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
 
 import model.Admin;
 import model.Adress;
 import model.Gender;
 import model.Location;
+import model.MenuItem;
+import model.Order;
 import model.Restaurant;
 import model.RestaurantStatus;
 import model.RestaurantType;
@@ -20,15 +30,41 @@ public class RestaurantService {
 	public static ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"restaurants.json"));
+
+		    gson.toJson(restaurantList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270","Vojvodina"));
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"restaurants.json"));
+
+		    Restaurant[] restaurants = gson.fromJson(reader, Restaurant[].class);
+		    Collections.addAll(restaurantList, restaurants);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+		
+		
+		/*Location location = new Location(33.33,33.33, new Adress("Srpskih Vladara 6", "Melence", "23270","Vojvodina"));
 		restaurantList.add(new Restaurant(1,"FLIPERANA",RestaurantType.ITALIAN,RestaurantStatus.CLOSED,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"Pera"));
 		restaurantList.add(new Restaurant(2,"BOB",RestaurantType.GRILL,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"" ));
 		restaurantList.add(new Restaurant(3,"N&N",RestaurantType.GREEK,RestaurantStatus.OPEN,location,"restaurantPictures/melenac1.jpg",new ArrayList<Integer>(),"" ));
-		
+		*/
 	}
 	
 	public static Integer generateID() 
@@ -161,6 +197,27 @@ public class RestaurantService {
 		restaurant.setStatus(RestaurantStatus.OPEN);
 		
 		restaurantList.add(restaurant);
+		save();
+		
+	}
+
+	public static void deleteItem(MenuItem menuItem) {
+		for (Restaurant restaurant : getAll()) {
+			if(restaurant.getEntityID() == menuItem.getRestaurant()) {
+				restaurant.getMenuItems().remove((Object)menuItem.getEntityID());
+				break;
+			}
+		}
+		save();
+	}
+
+	public static void deleteMenager(String username) {
+		for (Restaurant restaurant : getAll()) {
+			if(restaurant.getUsername().equals(username)) {
+				restaurant.setUsername("");
+				break;
+			}
+		}
 		save();
 		
 	}

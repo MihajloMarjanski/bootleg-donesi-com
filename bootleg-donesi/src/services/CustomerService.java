@@ -1,7 +1,14 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import model.Courier;
@@ -22,13 +29,34 @@ public class CustomerService {
 	private static CustomerType gold = new CustomerType("GOLD",5,20000);
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"customers.json"));
+
+		    gson.toJson(customerList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		Customer customer = new Customer(1, "customer", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.CUSTOMER, new ArrayList<Integer>(), new ShoppingCart(1), 0);
-		customer.setCustomerType(normal);
-		customerList.add(customer);
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"customers.json"));
+
+		    Customer[] customers = gson.fromJson(reader, Customer[].class);
+		    Collections.addAll(customerList, customers);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	private static Integer generateID() 

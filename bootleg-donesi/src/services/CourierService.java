@@ -1,9 +1,17 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import model.Comment;
 import model.Courier;
 import model.Customer;
 import model.Gender;
@@ -16,11 +24,34 @@ public class CourierService {
 	public static ArrayList<Courier> courierList = new ArrayList<Courier>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"couriers.json"));
+
+		    gson.toJson(courierList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		courierList.add(new Courier(1, "courier", "123", "Neki", "Tamo", Gender.MALE, "1999-09-15", Role.COURIER, new ArrayList<Integer>()));
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"couriers.json"));
+
+		    Courier[] couriers = gson.fromJson(reader, Courier[].class);
+		    Collections.addAll(courierList, couriers);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void addCourier(Courier courier) {

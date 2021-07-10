@@ -1,10 +1,18 @@
 package services;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import model.Admin;
+import model.Customer;
 import model.Gender;
 import model.Menager;
 import model.Role;
@@ -15,14 +23,36 @@ public class MenagerService {
 	public static ArrayList<Menager> menagerList = new ArrayList<Menager>();
 	
 	private static void save() {
-		
+		try {
+		    Gson gson = new Gson();
+
+		    Writer writer = Files.newBufferedWriter(Paths.get("data"+File.separator+"menagers.json"));
+
+		    gson.toJson(menagerList, writer);
+
+		    writer.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
 	}
 	
 	public static void load() {
-		menagerList.add(new Menager(1, "Pera", "123", "Petar", "Petrovic", Gender.MALE,
-				"1999-09-15", Role.MENAGER, 1));
-		menagerList.add(new Menager(2, "Pera2", "123", "Petar", "Petrovic", Gender.MALE,
-				"1999-09-15", Role.MENAGER, 0));
+		
+		try {
+		    Gson gson = new Gson();
+
+		    Reader reader = Files.newBufferedReader(Paths.get("data"+File.separator+"menagers.json"));
+
+		    Menager[] menagers = gson.fromJson(reader, Menager[].class);
+		    Collections.addAll(menagerList, menagers);
+		    
+		    reader.close();
+
+		} catch (Exception ex) {
+		    ex.printStackTrace();
+		}
+		
 	}
 	
 	public static void addMenager(Menager menager) {
@@ -186,6 +216,17 @@ public class MenagerService {
 				break;
 			}
 		}
+		save();
+	}
+
+	public static void deleteRestaurant(int entityID) {
+		for (Menager menager : menagerList) {
+			if (menager.getEntityID() == entityID) {
+				menager.setRestaurant(0);
+				break;
+			}
+		}
+		save();
 		
 	}
 	

@@ -233,7 +233,6 @@ Vue.component("allRestaurants",{
                 this.restaurantDTO = response.data
                 this.location[0] = this.restaurantDTO.location.geoLatitude
                 this.location[1] = this.restaurantDTO.location.geoLongitute
-                console.log(this.location)
                 this.center = this.location
                 if(this.role === 'MENAGER'){
                     axios
@@ -305,7 +304,6 @@ Vue.component("allRestaurants",{
                 .post('/viewRestaurant', this.reqparams)
                 .then(response=>{
                     this.restaurantDTO = response.data
-                    console.log(restaurantDTO)
                 })
                 .catch((error) => {
                   });
@@ -315,7 +313,20 @@ Vue.component("allRestaurants",{
               });
         },
         deleteMenuItem(menuItem){
-
+            axios
+            .post('/deleteMenuItem', menuItem)
+            .then(response=>{
+                axios
+                .post('/viewRestaurant', this.reqparams)
+                .then(response=>{
+                    this.restaurantDTO = response.data
+                })
+                .catch((error) => {
+                  });
+            })
+            .catch((error) => {
+                console.log(error)
+              });
         },
         deleteRestaurant(restaurant){
             axios
