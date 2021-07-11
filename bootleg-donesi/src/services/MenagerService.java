@@ -221,7 +221,7 @@ public class MenagerService {
 
 	public static void deleteRestaurant(int entityID) {
 		for (Menager menager : menagerList) {
-			if (menager.getEntityID() == entityID) {
+			if (menager.getRestaurant() == entityID) {
 				menager.setRestaurant(0);
 				break;
 			}

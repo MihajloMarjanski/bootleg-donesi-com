@@ -193,8 +193,9 @@ public class RestaurantService {
 		restaurant.setEntityID(generateID());
 		restaurant.setDeleted(false);
 		restaurant.setMenuItems(new ArrayList<Integer>());
-		restaurant.setLogoPath("restaurantPictures/melenac1.jpg");
+		restaurant.setLogoPath("restaurantPictures"+File.separator+ "RES" + generateID().toString() + ".png");
 		restaurant.setStatus(RestaurantStatus.OPEN);
+		restaurant.setRating(0);
 		
 		restaurantList.add(restaurant);
 		save();

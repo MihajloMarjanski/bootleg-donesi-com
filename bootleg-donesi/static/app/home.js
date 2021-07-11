@@ -37,6 +37,7 @@ Vue.component("home",{
             <div v-if="role === 'CUSTOMER'">
                 <button type= "button" v-on:click="restaurants">Restaurants</button>
                 <button type= "button" v-on:click="orders">My Orders</button>
+                <button type= "button" v-on:click="cart">Shopping Cart</button>
                 <inline style="float: right">
                     <span>{{username}}</span>
                     <button type= "button" v-on:click="myAccount">My Account</button>
@@ -82,6 +83,9 @@ Vue.component("home",{
             <div v-if="window === 'ORDERS'">
                 <orders></orders>
             </div>
+            <div v-if="window === 'CART'">
+                <cart></cart>
+            </div>
         </div>
     `,
     methods:{
@@ -113,6 +117,9 @@ Vue.component("home",{
 
         orders(){
             this.window = "ORDERS"
+        },
+        cart(){
+            this.window = "CART"
         },
         logout(){
             this.window = "RESTAURANTS"

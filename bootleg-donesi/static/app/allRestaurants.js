@@ -39,6 +39,10 @@ Vue.component("allRestaurants",{
                 rating:1,
                 text:"",
                 username:""
+            },
+            cartItem:{
+                entityID:"",
+                menuItem:""
             }
 
         }
@@ -188,6 +192,8 @@ Vue.component("allRestaurants",{
                                 <td style="width:40%">{{i.description}}</td>
                                 <td style="width:5%">{{i.price}}</td>
                                 <td v-if="role === 'ADMINISTRATOR'" style="width:5%"><button type= "button" v-on:click="deleteMenuItem(i)">Delete</button> </td>
+                                <td v-if="role === 'CUSTOMER' && restaurantDTO.status === 'OPEN' " style="width:5%"><input min="0" style="width:99%" type="number" v-model="i.count" placeholder = "Count"/><button type= "button" v-on:click="addToCart(i)">Add To Cart</button> </td>
+                                <td v-if="role === 'CUSTOMER' && restaurantDTO.status === 'CLOSED' " style="width:5%"></td>
                             </tr>                                                                  
                         </tbody>
                     </table>            
@@ -195,7 +201,7 @@ Vue.component("allRestaurants",{
                 <h1 v-if="commentable">Leave a comment</h1>
                 <div v-if="commentable">
                     <input style="width:85%" type="text" v-model="comment.text" placeholder = "Comment"/>
-                    <input :class="{invalid:comment.rating < 1 || comment.rating > 5}" style="width:5%" type="number" v-model="comment.rating" placeholder = "Rating"/>
+                    <input :class="{invalid:comment.rating < 1 || comment.rating > 5}" min="1" max="5" style="width:5%" type="number" v-model="comment.rating" placeholder = "Rating"/>
                     <button type= "button" v-on:click="makeComment()">Make Comment</button>
                 </div>
                 <h1 v-if="!myRes">Comments</h1>
@@ -332,16 +338,16 @@ Vue.component("allRestaurants",{
             axios
             .post('/deleteRestaurant', restaurant)
             .then(response=>{
-                axios
-                .post('/searchRestaurants', this.searchParmas)
-                .then(response=>{
-                    this.restaurants = response.data
-                })
-                .catch((error) => {
-                  });
             })
             .catch((error) => {
               });
+              axios
+              .post('/searchRestaurants', this.searchParmas)
+              .then(response=>{
+                  this.restaurants = response.data
+              })
+              .catch((error) => {
+                });
 
         },
         search(){
@@ -352,6 +358,23 @@ Vue.component("allRestaurants",{
             })
             .catch((error) => {
               });
+        },
+        addToCart(menuItem){
+            if(menuItem.count >0){
+                this.cartItem.entityID = localStorage.getItem("id")
+                this.cartItem.menuItem = menuItem
+                console.log(this.cartItem)
+                axios
+                .post('/addToCart', this.cartItem)
+                .then(response=>{
+                    menuItem.count = 0;
+                    alert("Added to cart");
+                })
+                .catch((error) => {
+                    menuItem.count = 0;
+                  });
+            }
+
         },
     }
 

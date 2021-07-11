@@ -6,16 +6,26 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 import javax.swing.ToolTipManager;
 
 import com.google.gson.Gson;
 
+import dto.CartItemDTO;
 import dto.RestaurantDTO;
 import model.Admin;
 import model.Comment;
@@ -26,6 +36,7 @@ import model.MenuItem;
 import model.Order;
 import model.Restaurant;
 import model.Role;
+import model.ShoppingCart;
 import model.User;
 import services.AdminService;
 import services.CheckerThread;
@@ -36,6 +47,7 @@ import services.MenagerService;
 import services.MenuItemService;
 import services.OrderService;
 import services.RestaurantService;
+import spark.utils.IOUtils;
 
 
 public class SparkAppMain {
@@ -940,7 +952,112 @@ public class SparkAppMain {
 					
 		});
 		
+		post("/addToCart", (req, res) -> {
+			res.type("application/json");
+			CartItemDTO cartItem = g.fromJson(req.body(), CartItemDTO.class);
+			customerService.addToCart(cartItem.getEntityID(),cartItem.getMenuItem());
+			
+			res.status(200);
+			return g.toJson("");
+					
+		});
 		
+		post("/getCart", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			
+			if(customerService.getCart(user.getEntityID()).getMenuItems().isEmpty()) {
+				res.status(200);
+				return g.toJson("");
+			}
+			
+			res.status(200);
+			return g.toJson(customerService.getCart(user.getEntityID()));
+					
+		});
+		
+		post("/changeCart", (req, res) -> {
+			res.type("application/json");
+			ShoppingCart cart = g.fromJson(req.body(), ShoppingCart.class);
+			customerService.changeCart(cart);
+			
+			res.status(200);
+			return "OK";
+					
+		});
+		
+		post("/removeFromCart", (req, res) -> {
+			res.type("application/json");
+			CartItemDTO cartItem = g.fromJson(req.body(), CartItemDTO.class);
+			customerService.removeFromCart(cartItem.getEntityID(),cartItem.getMenuItem());
+			
+			res.status(200);
+			return g.toJson("");
+					
+		});
+		
+		post("/checkout", (req, res) -> {
+			res.type("application/json");
+			ShoppingCart cart = g.fromJson(req.body(), ShoppingCart.class);
+			if(!cart.getMenuItems().isEmpty()) {
+				customerService.emptyCart(cart);
+				customerService.addOrder(cart.getCustomer(),orderService.generateID());
+				orderService.createOrder(cart,restaurantService.getRestaurantById(cart.getMenuItems().get(0).getRestaurant()));
+				customerService.updatePoints(cart.getCustomer(),cart.getPrice()/1000*133);
+			}
+
+			res.status(200);
+			return g.toJson("");
+					
+		});
+		
+		post("/uploadRestaurantPicture", "multipart/form-data", (req, res) -> {
+			
+			String location = "static"+File.separator+"restaurantPictures";          // the directory location where files will be stored
+			long maxFileSize = 100000000;       // the maximum size allowed for uploaded files
+			long maxRequestSize = 100000000;    // the maximum size allowed for multipart/form-data requests
+			int fileSizeThreshold = 1024;       // the size threshold after which files will be written to disk
+			MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+				     location, maxFileSize, maxRequestSize, fileSizeThreshold);
+			req.raw().setAttribute("org.eclipse.jetty.multipartConfig",multipartConfigElement);
+				
+            Part uploadedFile = req.raw().getPart("file");
+            Path out = Paths.get("static"+File.separator+"restaurantPictures"+File.separator+"RES"+ restaurantService.generateID().toString() +".png");
+            try (final InputStream in = uploadedFile.getInputStream()) {
+               Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+               uploadedFile.delete();
+            }
+            
+            multipartConfigElement = null;
+            uploadedFile = null;
+            
+            
+            return "OK";
+        });
+		
+		post("/uploadMenuPicture", "multipart/form-data", (req, res) -> {
+			
+			String location = "static"+File.separator+"menuPictures";          // the directory location where files will be stored
+			long maxFileSize = 100000000;       // the maximum size allowed for uploaded files
+			long maxRequestSize = 100000000;    // the maximum size allowed for multipart/form-data requests
+			int fileSizeThreshold = 1024;       // the size threshold after which files will be written to disk
+			MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+				     location, maxFileSize, maxRequestSize, fileSizeThreshold);
+			req.raw().setAttribute("org.eclipse.jetty.multipartConfig",multipartConfigElement);
+				
+            Part uploadedFile = req.raw().getPart("file");
+            Path out = Paths.get("static"+File.separator+"menuPictures"+File.separator+"MEN"+ menuItemService.generateID().toString() +".png");
+            try (final InputStream in = uploadedFile.getInputStream()) {
+               Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
+               uploadedFile.delete();
+            }
+            
+            multipartConfigElement = null;
+            uploadedFile = null;
+            
+            
+            return "OK";
+        });
 		
 	}
 }

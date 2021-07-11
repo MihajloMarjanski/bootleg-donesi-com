@@ -88,6 +88,15 @@ public class Restaurant extends Entity{
 		this.rating = rating;
 	}
 
+	@Override
+	public String toString() {
+		return "Restaurant [name=" + name + ", type=" + type + ", status=" + status + ", location=" + location
+				+ ", logoPath=" + logoPath + ", rating=" + rating + ", username=" + username + ", menuItems="
+				+ menuItems + "]";
+	}
+
+
+
 	public String getTownAndCountry() {
 		return location.getAdress().getTown() + " " + location.getAdress().getCountry();
 	}

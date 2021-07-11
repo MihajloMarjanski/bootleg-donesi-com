@@ -16,6 +16,7 @@ import model.Customer;
 import model.CustomerType;
 import model.Gender;
 import model.Menager;
+import model.MenuItem;
 import model.Role;
 import model.ShoppingCart;
 import model.User;
@@ -234,6 +235,145 @@ public class CustomerService {
 			}
 		}
 			
+		save();
+		
+	}
+
+	public void addToCart(Integer entityID, MenuItem menuItem) {
+		Customer customerToAdd = new Customer();
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == entityID) {
+				customerToAdd = customer;
+				break;
+			}
+		}
+		
+		if(hasInShoppingCart(customerToAdd, menuItem)) {
+			for (MenuItem menuItem2 : customerToAdd.getShoppingCart().getMenuItems()) {
+				if(menuItem2.getEntityID() == menuItem.getEntityID()) {
+					menuItem2.setCount(menuItem2.getCount() + menuItem.getCount());
+					break;
+				}
+			}
+		}else {
+			customerToAdd.getShoppingCart().getMenuItems().add(menuItem);
+		}
+		
+		double price = 0;
+		for (MenuItem menuItem2 : customerToAdd.getShoppingCart().getMenuItems()) {
+			price += menuItem2.getPrice()*menuItem2.getCount();
+		}
+		price = price - (price * customerToAdd.getCustomerType().getDiscount()/100);
+		
+		customerToAdd.getShoppingCart().setPrice(price);
+		
+		save();
+	}
+	
+	private boolean hasInShoppingCart(Customer customer, MenuItem menuItem) {
+		
+		for (MenuItem menuItem2 : customer.getShoppingCart().getMenuItems()) {
+			if(menuItem2.getEntityID() == menuItem.getEntityID()) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
+
+	public ShoppingCart getCart(int entityID) {
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == entityID) {
+				return customer.getShoppingCart();
+			}
+		}
+		return null;
+	}
+
+	public void changeCart(ShoppingCart cart) {
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == cart.getCustomer()) {
+				customer.setShoppingCart(cart);
+				double price = 0;
+				for (MenuItem menuItem2 : customer.getShoppingCart().getMenuItems()) {
+					price += menuItem2.getPrice()*menuItem2.getCount();
+				}
+				price = price - (price * customer.getCustomerType().getDiscount()/100);
+				
+				customer.getShoppingCart().setPrice(price);
+				save();
+				break;
+			}
+		}
+		
+	}
+
+	public void removeFromCart(Integer entityID, MenuItem menuItem) {
+		Customer customerToAdd = new Customer();
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == entityID) {
+				customerToAdd = customer;
+				break;
+			}
+		}
+		MenuItem menuItemForRemoval = new MenuItem();
+		for (MenuItem menuItem2 : customerToAdd.getShoppingCart().getMenuItems()) {
+			if(menuItem2.getEntityID() == menuItem.getEntityID()) {
+				menuItemForRemoval = menuItem2;
+			}
+		}
+
+		customerToAdd.getShoppingCart().getMenuItems().remove(menuItemForRemoval);
+		double price = 0;
+		for (MenuItem menuItem2 : customerToAdd.getShoppingCart().getMenuItems()) {
+			price += menuItem2.getPrice()*menuItem2.getCount();
+		}
+		price = price - (price * customerToAdd.getCustomerType().getDiscount()/100);
+		
+		customerToAdd.getShoppingCart().setPrice(price);
+		
+		save();
+	}
+
+	public void emptyCart(ShoppingCart cart) {
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == cart.getCustomer()) {
+				customer.getShoppingCart().getMenuItems().clear();
+				break;
+			}
+		}
+		save();
+	}
+
+	public void addOrder(Integer customerID, Integer generateID) {
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == customerID) {
+				customer.getOrders().add(generateID);
+				break;
+			}
+		}
+		save();
+		
+	}
+
+	public void updatePoints(Integer customerID, double pointsGot) {
+		for (Customer customer : getAll()) {
+			if(customer.getEntityID() == customerID) {
+				customer.setPoints(customer.getPoints() + pointsGot);
+				if(customer.getPoints() >= gold.getRequiredPoints()) {
+					customer.setCustomerType(gold);
+					break;
+				}
+				else if(customer.getPoints() >= silver.getRequiredPoints()) {
+					customer.setCustomerType(silver);
+					break;
+				}
+				else if(customer.getPoints() >= bronze.getRequiredPoints()) {
+					customer.setCustomerType(bronze);
+					break;
+				}
+			}
+		}
 		save();
 		
 	}

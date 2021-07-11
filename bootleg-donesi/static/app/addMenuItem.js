@@ -13,7 +13,8 @@ Vue.component("addMenuItem",{
                 quantity:"",
                 quantityType:"GRAMS",
                 restaurant:""
-            }
+            },
+            file:""
 
         }
     },
@@ -24,6 +25,15 @@ Vue.component("addMenuItem",{
     template:`
     <div>
     <h1>Add menu item</h1>
+    <div class="container">
+        <form id="registrationFormRest" enctype="multipart/form-data"  method ="POST" @submit.prevent = "upload">
+            <div>
+                <label for="file"><b>Restaurant picture</b></label>
+                <input accept="image/png" type="file" name="file" id="file" ref="file" v-on:change="fileUploadChange()" required/>
+                <button type = "submit"> Upload </button>
+            </div>
+        </form>
+    </div>
     <div class="container">
         <form id="registrationForm" method ="POST" @submit.prevent = "addItem">
             <div>
@@ -84,7 +94,24 @@ Vue.component("addMenuItem",{
                 console.log("Error");
                 alert("A menu item with the same name already exists in your restaurant");
               });
-        }
+        },
+        fileUploadChange(){
+            this.file = this.$refs.file.files[0];
+        },
+        upload(){
+            let formData = new FormData();
+            formData.append("file", this.file);
+            axios
+              .post("/uploadMenuPicture", formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then(response=>{
+              })
+              .catch((error) => {
+              });
+        },
 
     }
 

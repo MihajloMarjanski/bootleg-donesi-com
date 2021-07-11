@@ -23,6 +23,7 @@ import model.OrderStatus;
 import model.Restaurant;
 import model.RestaurantStatus;
 import model.RestaurantType;
+import model.ShoppingCart;
 
 public class OrderService {
 
@@ -74,7 +75,7 @@ public class OrderService {
 	*/
 	}
 	
-	private static Integer generateID() 
+	public static Integer generateID() 
 	{
 		int id = 0;
 		for (Order order : orderList) {
@@ -469,6 +470,29 @@ public class OrderService {
 		}
 		
 		return delivered;
+	}
+
+	public void createOrder(ShoppingCart cart, Restaurant restaurantById) {
+		Order order = new Order();
+		Integer orderid = 1000000000 + generateID();
+		String orderID = orderid.toString();
+		orderID = "0" + orderID.substring(1);
+		order.setEntityID(generateID());
+		order.setCourier(0);
+		order.setCustomer(cart.getCustomer());
+		order.setDeleted(false);
+		order.setMenuItems(cart.getMenuItems());
+		order.setOrderID(orderID);
+		order.setOrderStatus(OrderStatus.PROCESSING);
+		order.setPrice(cart.getPrice());
+		order.setRequests(new ArrayList<String>());
+		order.setRestaurant(restaurantById.getEntityID());
+		order.setRestaurantName(restaurantById.getName());
+		order.setRestaurantType(restaurantById.getType());
+		order.setTimeOfOrder(new Date());
+		orderList.add(order);
+		save();
+		
 	}
 	
 }

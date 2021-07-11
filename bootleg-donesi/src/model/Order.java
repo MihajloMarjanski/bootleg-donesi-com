@@ -7,7 +7,7 @@ public class Order extends Entity{
 	
 	
 	protected String orderID;
-	protected ArrayList<Integer> menuItems;
+	protected ArrayList<MenuItem> menuItems;
 	protected Integer restaurant;
 	protected Date timeOfOrder;
 	protected Double price;
@@ -23,7 +23,7 @@ public class Order extends Entity{
 	}
 	
 	
-	public Order(int entityID, String orderID, ArrayList<Integer> menuItems, Integer restaurant, Date timeOfOrder,
+	public Order(int entityID, String orderID, ArrayList<MenuItem> menuItems, Integer restaurant, Date timeOfOrder,
 			Double price, Integer customer, OrderStatus orderStatus, Integer courier, String restaurantName, RestaurantType restaurantType) {
 		super(entityID);
 		this.orderID = orderID;
@@ -78,10 +78,10 @@ public class Order extends Entity{
 	public void setOrderID(String orderID) {
 		this.orderID = orderID;
 	}
-	public ArrayList<Integer> getMenuItems() {
+	public ArrayList<MenuItem> getMenuItems() {
 		return menuItems;
 	}
-	public void setMenuItems(ArrayList<Integer> menuItems) {
+	public void setMenuItems(ArrayList<MenuItem> menuItems) {
 		this.menuItems = menuItems;
 	}
 	public Integer getRestaurant() {

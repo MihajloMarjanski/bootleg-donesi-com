@@ -32,7 +32,8 @@ Vue.component("addRestaurant",{
                 gender:"",
                 dateOfBirth:"",
                 role:"MENAGER"
-            }
+            },
+            file:""
         }
     },
     mounted(){
@@ -43,11 +44,19 @@ Vue.component("addRestaurant",{
         })
     },
     template:`
-    	<div>
+    	<div> 
         	<h1>New restaurant registration form</h1>
             <div class="container">
-                <form id="registrationFormRest" method ="POST" @submit.prevent = "registerRes">
-
+                <form id="registrationFormRest" enctype="multipart/form-data"  method ="POST" @submit.prevent = "upload">
+                    <div>
+                        <label for="file"><b>Restaurant picture</b></label>
+                        <input accept="image/png" type="file" name="file" id="file" ref="file" v-on:change="fileUploadChange()" required/>
+                        <button type = "submit"> Upload </button>
+                    </div>
+                </form>
+            </div>
+            <div class="container">
+                <form id="registrationFormRest"  method ="POST" @submit.prevent = "registerRes">
                     <div>
                         <label for="name"><b>Name</b></label>
                         <input type="text" v-model="restaurant.name" placeholder = "Name" required/>
@@ -222,6 +231,24 @@ Vue.component("addRestaurant",{
         },
         addMenager(menager){
             this.restaurant.username = menager.username
+        },
+
+        fileUploadChange(){
+            this.file = this.$refs.file.files[0];
+        },
+        upload(){
+            let formData = new FormData();
+            formData.append("file", this.file);
+            axios
+              .post("/uploadRestaurantPicture", formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then(response=>{
+              })
+              .catch((error) => {
+              });
         },
 
     }

@@ -1,17 +1,17 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ShoppingCart {
 	protected Integer customer;
 	protected double price;
-	protected HashMap<Integer,Integer> menuItems;
+	protected ArrayList<MenuItem> menuItems;
 	
 	public ShoppingCart(Integer customer) {
 		super();
 		this.customer = customer;
 		this.price = 0;
-		this.menuItems = new HashMap<Integer, Integer>();
+		this.menuItems = new ArrayList<MenuItem>();
 	}
 	public Integer getCustomer() {
 		return customer;
@@ -25,10 +25,10 @@ public class ShoppingCart {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public HashMap<Integer, Integer> getMenuItems() {
+	public ArrayList<MenuItem> getMenuItems() {
 		return menuItems;
 	}
-	public void setMenuItems(HashMap<Integer, Integer> menuItems) {
+	public void setMenuItems(ArrayList<MenuItem> menuItems) {
 		this.menuItems = menuItems;
 	}
 	

@@ -51,7 +51,7 @@ public class MenuItemService {
 		}
 	}
 	
-	private static Integer generateID() 
+	public static Integer generateID() 
 	{
 		int id = 0;
 		for (MenuItem menuItem : menuItemList) {
@@ -123,8 +123,9 @@ public class MenuItemService {
 	
 	public static void add(MenuItem item) {
 		item.setDeleted(false);
-		item.setPicturePath("menuPictures/melenac1.png");
+		item.setPicturePath("menuPictures"+File.separator+ "MEN" + generateID().toString() + ".png");
 		item.setEntityID(generateID());
+		item.setCount(0);
 		menuItemList.add(item);
 		save();
 		

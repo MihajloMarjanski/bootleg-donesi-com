@@ -11,11 +11,12 @@ public class MenuItem extends Entity{
 	protected QuantityType quantityType;
 	protected String description;
 	protected String picturePath;
+	protected Integer count;
 	
 	
 	
 	public MenuItem(int entityID, String name, double price, MenuItemType type, Integer restaurant, Integer quantity,
-			QuantityType quantityType, String description, String picturePath) {
+			QuantityType quantityType, String description, String picturePath,Integer count) {
 		super(entityID);
 		this.name = name;
 		this.price = price;
@@ -25,12 +26,21 @@ public class MenuItem extends Entity{
 		this.quantityType = quantityType;
 		this.description = description;
 		this.picturePath = picturePath;
+		this.count = count;
 	}
 	
 	public MenuItem() {
 		
 	}
 	
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -78,6 +88,13 @@ public class MenuItem extends Entity{
 	}
 	public void setPicturePath(String picturePath) {
 		this.picturePath = picturePath;
+	}
+
+	@Override
+	public String toString() {
+		return "MenuItem [name=" + name + ", price=" + price + ", type=" + type + ", restaurant=" + restaurant
+				+ ", quantity=" + quantity + ", quantityType=" + quantityType + ", description=" + description
+				+ ", picturePath=" + picturePath + ", count=" + count + "]";
 	}
 	
 	
